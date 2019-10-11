@@ -1,0 +1,32 @@
+.header{
+    display: grid;
+    grid-template-areas: "menu menu menu menu login";
+    /*justify-content: space-around;*/
+}
+
+.segment, .login {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+
+.segment {
+    grid-area: menu;
+}
+
+.login {
+    grid-area: login;
+    justify-self: end;
+}
+
+.menuItem {
+    display: inline-block;
+}
+
+.menuItem a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px 15px;
+}
