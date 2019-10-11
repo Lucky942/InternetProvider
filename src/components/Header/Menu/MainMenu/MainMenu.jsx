@@ -8,13 +8,13 @@ const MainMenu = () => {
         <div className={classnames(styles.mainMenu, "mainMenu")}>
             <ul>
                 <li className={styles.menuItem}>
-                    <a href="#">Тарифы</a>
+                    <a href="./tarriff">Тарифы</a>
                 </li>
                 <li className={styles.menuItem}>
-                    <a href="#">Услуги</a>
+                    <a href="./services">Услуги</a>
                 </li>
                 <li className={styles.menuItem}>
-                    <a href="#">Помощь</a>
+                    <a href="./help">Помощь</a>
                 </li>
             </ul>
         </div>
