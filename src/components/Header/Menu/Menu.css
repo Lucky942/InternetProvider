@@ -1,0 +1,14 @@
+.menu{
+    display: grid;
+    grid-template-areas: "mainMenu mainMenu authorization";
+    font-weight: 500;
+}
+
+.mainMenu {
+    grid-area: mainMenu;
+}
+
+.authorization {
+    grid-area: authorization;
+    justify-self: end;
+}
