@@ -12,4 +12,11 @@
     text-decoration: none;
     display: block;
     padding: 10px 15px;
+    transition: 0.3s;
+}
+
+.menuItem a:hover,
+.menuItem a:focus {
+    color: rgba(0,0,0,.5);
+    transform: scale(0.9);
 }

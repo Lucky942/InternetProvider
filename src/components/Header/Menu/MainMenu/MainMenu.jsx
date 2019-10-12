@@ -7,15 +7,15 @@ import {NavLink} from "react-router-dom";
 const MainMenu = () => {
     return (
         <div className={classnames(styles.mainMenu, "mainMenu")}>
-            <ul>
+            <ul className={styles.menuList}>
                 <li className={styles.menuItem}>
-                    <NavLink to="/tariffs">Тарифы</NavLink>
+                    <NavLink to="/tariffs"  activeClassName={styles.active}>Тарифы</NavLink>
                 </li>
                 <li className={styles.menuItem}>
-                    <NavLink to="/services">Услуги</NavLink>
+                    <NavLink to="/services" activeClassName={styles.active}>Услуги</NavLink>
                 </li>
                 <li className={styles.menuItem}>
-                    <NavLink to="/help">Помощь</NavLink>
+                    <NavLink to="/help" activeClassName={styles.active}>Помощь</NavLink>
                 </li>
             </ul>
         </div>
