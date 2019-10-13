@@ -1,5 +1,9 @@
-let express = require("express");
+const express = require("express");
+const cors = require('cors');
+
 let app = express();
+
+app.use(cors());
 
 const SELECT_ALL_TARIFFS_QUERY = "SELECT * FROM Tariff";
 
@@ -11,15 +15,19 @@ let connection = mysql.createConnection({
   database: "InternetProvider"
 });
 
-connection.connect();
-connection.query("SELECT 1 + 1 AS solution", function(err, rows, fields) {
-  if (err) throw err;
-  console.log("The solution is: ", rows[0].solution);
+connection.connect((err) => {
+  if (err) {
+    console.error('error connecting: ' + err.stack);
+    return;
+  }
+
+  console.log('connected as id ' + connection.threadId);
 });
+
 
 app.get("/tariffs", (req, res) => {
   connection.query(SELECT_ALL_TARIFFS_QUERY, (err, results) => {
-    if (err) return res.send("zal" + err);
+    if (err) return res.send(err);
     else {
       return res.json({
         data: results
@@ -27,6 +35,7 @@ app.get("/tariffs", (req, res) => {
     }
   });
 });
+
 
 
 
