@@ -1,34 +1,36 @@
 import React, { Component } from "react";
-import styles from "./Tariffs.module.css";
+import { connect } from "react-redux";
+import { setTariffs } from "../../../redux/tariffsReducer";
 import * as axios from "axios";
 import Tariffs from "./Tariffs";
-import {connect} from "react-redux";
+import { getTariffs } from "../../../api/api";
 
-class TariffsContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tariffs: []
-    };
-  }
-
+class TariffsApiComponent extends Component {
   componentDidMount() {
-    axios
-      .get("http://localhost:1337/tariffs")
+    getTariffs()
       .then(response => {
-        this.setState({ tariffs: response.data.data });
+        this.props.setTariffs(response.data);
       })
       .catch(err => console.error(err));
   }
 
   render() {
-    return <Tariffs tariffs={this.state.tariffs} />;
+    return (
+      <Tariffs
+        tariffs={this.props.tariffs}
+        setTariffs={this.props.setTariffs}
+      />
+    );
   }
 }
 
-/*let mapStateToProps = () => {
+let mapStateToProps = state => {
+  return {
+    tariffs: state.tariffsReducer.tariffs
+  };
+};
 
-}
-
-const TariffsContainer = connect(mapStateToProps, mapDispatchToProps)(Tariffs);*/
-export default TariffsContainer;
+export default connect(
+  mapStateToProps,
+  { setTariffs }
+)(TariffsApiComponent);

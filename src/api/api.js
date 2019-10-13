@@ -1,11 +1,8 @@
 import * as axios from "axios";
 
 export const getTariffs = () => {
-    axios
+   return  axios
         .get("http://localhost:1337/tariffs")
-        .then(response => {
-            return response.data
-        })
-        .catch(err => console.error(err));
+        .then(response => response.data);
 };
 

@@ -1,9 +1,10 @@
 
 
+/*
 const servicesReducer = () => {
     switch (action.type) {
 
     }
 }
 
-export default servicesReducer;
+export default servicesReducer;*/

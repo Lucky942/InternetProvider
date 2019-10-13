@@ -7,7 +7,7 @@ function Main() {
   return (
     <div className="main">
       {/*<Route path="" render={() => <p>Main</p>}/>*/}
-        <Route exact path="/tariffs" component={TariffsContainer} />
+        <Route exact path="/tariffs" render={() => <TariffsContainer />} />
         <Route exact path="/services" component={Services} />
     </div>
   );

@@ -4,17 +4,20 @@ import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Footer from "./components/Footer/Footer";
 import {BrowserRouter, Route} from "react-router-dom";
-import Tariffs from "./components/Main/Tariffs/Tariffs";
-import Services from "./components/Main/Services/Services";
+import {Provider} from "react-redux";
+import store from "./redux/reduxStore";
 
-function App() {
+
+const App = () => {
   return (
     <BrowserRouter>
-      <div className="app">
-        <Header />
-        <Main />
-        <Footer />
-      </div>
+        <Provider store={store}>
+            <div className="app">
+                <Header/>
+                <Main/>
+                <Footer/>
+            </div>
+        </Provider>
     </BrowserRouter>
   );
 }

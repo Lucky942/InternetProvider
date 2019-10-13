@@ -3,10 +3,9 @@ import tariffsReducer from "./tariffsReducer";
 import servicesReducer from "./servicesReducer";
 
 let reducers = combineReducers({
-  tariffsReducer,
-  servicesReducer
+  tariffsReducer
 });
 
-let Store = createStore(reducers);
+let store = createStore(reducers);
 
-export default Store;
+export default store;
