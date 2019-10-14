@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setTariffs } from "../../../redux/tariffsReducer";
-import * as axios from "axios";
 import Tariffs from "./Tariffs";
 import { getTariffs } from "../../../api/api";
 
@@ -18,7 +17,6 @@ class TariffsApiComponent extends Component {
     return (
       <Tariffs
         tariffs={this.props.tariffs}
-        setTariffs={this.props.setTariffs}
       />
     );
   }

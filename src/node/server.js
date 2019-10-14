@@ -1,11 +1,12 @@
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
 
 let app = express();
 
 app.use(cors());
 
 const SELECT_ALL_TARIFFS_QUERY = "SELECT * FROM Tariff";
+const SELECT_ALL_SERVICES_QUERY = "SELECT * FROM Service";
 
 let mysql = require("mysql");
 let connection = mysql.createConnection({
@@ -15,15 +16,14 @@ let connection = mysql.createConnection({
   database: "InternetProvider"
 });
 
-connection.connect((err) => {
+connection.connect(err => {
   if (err) {
-    console.error('error connecting: ' + err.stack);
+    console.error("error connecting: " + err.stack);
     return;
   }
 
-  console.log('connected as id ' + connection.threadId);
+  console.log("connected as id " + connection.threadId);
 });
-
 
 app.get("/tariffs", (req, res) => {
   connection.query(SELECT_ALL_TARIFFS_QUERY, (err, results) => {
@@ -36,8 +36,16 @@ app.get("/tariffs", (req, res) => {
   });
 });
 
-
-
+app.get("/services", (req, res) => {
+  connection.query(SELECT_ALL_SERVICES_QUERY, (err, results) => {
+    if (err) return res.send(err);
+    else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
 
 app.listen(1337, () => {
   console.log("Example app on port 1337!");

@@ -1,17 +1,18 @@
 import React from "react";
 import styles from "./Authorization.module.css";
-import "../Menu.css"
+import "../Menu.css";
 import classnames from "classnames";
+import { NavLink } from "react-router-dom";
 
 const Authorization = () => {
   return (
     <div className={classnames(styles.authorization, "authorization")}>
       <ul className={styles.login}>
         <li className={styles.menuItem}>
-          <a href="#">Войти</a>
+          <NavLink to="/signin">Войти</NavLink>
         </li>
         <li className={styles.menuItem}>
-          <a href="#">Зарегистрироваться</a>
+          <NavLink to="/signup">Зарегистрироваться</NavLink>
         </li>
       </ul>
     </div>

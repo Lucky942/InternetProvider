@@ -1,5 +1,5 @@
 import React from "react";
-import "./Menu.css"
+import "./Menu.css";
 import Authorization from "./Authorization/Authorization";
 import MainMenu from "./MainMenu/MainMenu";
 

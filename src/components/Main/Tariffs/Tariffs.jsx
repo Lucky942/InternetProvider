@@ -1,22 +1,13 @@
 import React from "react";
 import styles from "./Tariffs.module.css";
+import Tariff from "./Tariff/Tariff";
 
 const Tariffs = props => {
-  let renderTariff = ({
-    Tariff_Id,
-    Tariff_Name,
-    Tariff_MaxSpeed,
-    Tariff_Price
-  }) => (
-    <div key={Tariff_Id}>
-      Tariff - {Tariff_Name}
-      TariffSpeed - {Tariff_MaxSpeed}
-      TariffPrice - {Tariff_Price}
-    </div>
-  );
 
   return (
-    <div className={styles.tariffs}>{props.tariffs.map(renderTariff)}</div>
+    <div className={styles.tariffs}>{props.tariffs.map(elem => <Tariff tariffName = {elem.Tariff_Name}
+                                                                       tariffSpeed = {elem.Tariff_MaxSpeed}
+                                                                       tariffPrice = {elem.Tariff_Price} />)}</div>
   );
 };
 
