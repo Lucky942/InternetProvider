@@ -1,8 +1,8 @@
 import React from "react";
-import Services from "./Services/Services";
 import { Route } from "react-router-dom";
 import TariffsContainer from "./Tariffs/TariffsContainer";
 import ServicesContainer from "./Services/ServicesContainer";
+import Login from "./Login/Login";
 
 function Main() {
   return (
@@ -10,6 +10,7 @@ function Main() {
       {/*<Route path="" render={() => <p>Main</p>}/>*/}
         <Route exact path="/tariffs" render={() => <TariffsContainer />} />
         <Route exact path="/services" render={() => <ServicesContainer /> } />
+        <Route exact path="/login" render={() => <Login /> } />
     </div>
   );
 }

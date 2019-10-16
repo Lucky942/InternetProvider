@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const mysql = require("mysql");
 
 let app = express();
 
@@ -8,7 +9,6 @@ app.use(cors());
 const SELECT_ALL_TARIFFS_QUERY = "SELECT * FROM Tariff";
 const SELECT_ALL_SERVICES_QUERY = "SELECT * FROM Service";
 
-let mysql = require("mysql");
 let connection = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -16,14 +16,13 @@ let connection = mysql.createConnection({
   database: "InternetProvider"
 });
 
-connection.connect(err => {
+/*connection.connect(err => {
   if (err) {
     console.error("error connecting: " + err.stack);
     return;
   }
-
   console.log("connected as id " + connection.threadId);
-});
+});*/
 
 app.get("/tariffs", (req, res) => {
   connection.query(SELECT_ALL_TARIFFS_QUERY, (err, results) => {

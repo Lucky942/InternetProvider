@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import * as axios from "axios";
-import {getServices, getTariffs} from "../../../api/api";
+import {getServices} from "../../../api/api";
 import {setServices} from "../../../redux/servicesReducer";
 import Services from "./Services";
 

@@ -1,20 +1,21 @@
 import styles from "./Segment.module.css";
 import React from "react";
+import {NavLink} from "react-router-dom";
 
 const Segment = () => {
   return (
     <ul className={styles.segment}>
       <li className={styles.menuItem}>
-        <a href="#">Для бизнеса</a>
+        <NavLink to="#">Для бизнеса</NavLink>
       </li>
       <li className={styles.menuItem}>
-        <a href="#">Для найма</a>
+        <NavLink to="#">Для найма</NavLink>
       </li>
       <li className={styles.menuItem}>
-        <a href="#">О нас</a>
+        <NavLink to="#">О нас</NavLink>
       </li>
       <li className={styles.menuItem}>
-        <a href="#">Интернет-магазин</a>
+        <NavLink to="#">Интернет-магазин</NavLink>
       </li>
     </ul>
   );

@@ -9,7 +9,7 @@ const Authorization = () => {
     <div className={classnames(styles.authorization, "authorization")}>
       <ul className={styles.login}>
         <li className={styles.menuItem}>
-          <NavLink to="/signin">Войти</NavLink>
+          <NavLink to="/login">Войти</NavLink>
         </li>
         <li className={styles.menuItem}>
           <NavLink to="/signup">Зарегистрироваться</NavLink>
