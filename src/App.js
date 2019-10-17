@@ -20,6 +20,6 @@ const App = () => {
         </Provider>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

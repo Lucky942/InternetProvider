@@ -8,6 +8,7 @@ const Menu = () => {
     <div className="menu">
       <MainMenu />
       <Authorization />
+
     </div>
   );
 };

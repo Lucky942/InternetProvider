@@ -10,7 +10,7 @@ const LoginForm = (props) => {
         <Field placeholder="login" name={"login"} component={"input"} validate={[required]}/>
       </div>
       <div>
-        <Field placeholder="password" name={"password"} component={"input"} />
+        <Field placeholder="password" name={"password"} component={"input"} type={"password"}/>
       </div>
       <div>
         <Field component={"input"} name={"rememberMe"} type={"checkbox"} /> Remember me
@@ -27,9 +27,9 @@ const LoginReduxForm =  reduxForm({
     form: 'login'
 })(LoginForm);
 
-const Login = () => {
+const Login = (props) => {
     const onSubmit = (formData) => {
-        console.log(formData);
+        props.login(formData.login, formData.password, formData.rememberMe)
     };
 
   return (
