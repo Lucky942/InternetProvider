@@ -1,13 +1,21 @@
 import * as axios from "axios";
 
-export const getTariffs = () => {
-  return axios
-    .get("http://localhost:1337/tariffs")
+const instance = axios.create({
+  headers: {
+    "x-access-token": localStorage.getItem('token')
+  }
+});
+
+
+export const getTariffs = (clientId) => {
+  debugger
+  return instance
+    .get(`http://localhost:1337/tariffs?clientId=${clientId}`)
     .then(response => response.data);
 };
 
 export const getServices = () => {
-  return axios
+  return instance
     .get("http://localhost:1337/services")
     .then(response => response.data);
 };
@@ -15,10 +23,10 @@ export const getServices = () => {
 
 export const loginAPI = (login, password, rememberMe) => {
   return axios
-      .post("http://localhost:1337/auth/me", {login, password, rememberMe})
+      .post("http://localhost:1337/login", {login, password, rememberMe})
 };
 
 export const logoutAPI = () => {
   return axios
-      .delete("http://localhost:1337/auth/me");
+      .delete("http://localhost:1337/logoute");
 };

@@ -3,10 +3,12 @@ import { connect } from "react-redux";
 import { setTariffs } from "../../../redux/tariffsReducer";
 import Tariffs from "./Tariffs";
 import { getTariffs } from "../../../api/api";
+import Services from "../Services/Services";
+import { Redirect } from "react-router-dom";
 
 class TariffsApiComponent extends Component {
   componentDidMount() {
-    getTariffs()
+    getTariffs(this.props.clientId)
       .then(response => {
         this.props.setTariffs(response.data);
       })
@@ -14,17 +16,21 @@ class TariffsApiComponent extends Component {
   }
 
   render() {
+    let isAuth = this.props.isAuth;
+
     return (
-      <Tariffs
-        tariffs={this.props.tariffs}
-      />
+      (isAuth && <Tariffs tariffs={this.props.tariffs} />) || (
+        <Redirect to={"/login"} />
+      )
     );
   }
 }
 
 let mapStateToProps = state => {
   return {
-    tariffs: state.tariffsReducer.tariffs
+    tariffs: state.tariffsReducer.tariffs,
+    clientId: state.auth.userId,
+    isAuth: state.auth.isAuth
   };
 };
 

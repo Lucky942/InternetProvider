@@ -6,72 +6,43 @@ let checkToken = require("./middleware").checkToken;
 
 const SELECT_ALL_TARIFFS_QUERY = "SELECT * FROM Tariff";
 const SELECT_ALL_SERVICES_QUERY = "SELECT * FROM Service";
+const SELECT_ALL_USERS = "SELECT * FROM Users";
+const SELECT_USER_CONTRACT = "SELECT * FROM Contract Where Contract_ClientId = 1";
 
 let connection = require("./dbconnect");
 
-/*const Users = [
-  {
-    id: 1,
-    login: "petya",
-    password: "123"
-  },
-  {
-    id: 2,
-    login: "vasya",
-    password: "123"
-  },
-  {
-    id: 3,
-    login: "anton",
-    password: "123"
-  }
-];*/
-
-/*app.post("/auth/me", (req,res,next) => {
-
-  let user = Users.find( user => user['login'] === req.body.login  && user['password'] === req.body.password);
-  console.log(user);
-
-
-  res.json({
-    data: {
-      resultCode: 0,
-      data: {
-        id: 1,
-        login: 2
-      }
-    }
-  })
-});*/
-
 class HandlerGenerator {
   login = (req, res) => {
-    let username = req.body.username;
+    let username = req.body.login;
     let password = req.body.password;
-    // for example admin
-    // For the given username fetch user from DB
-    let mockedUsername = "admin";
-    let mockedPassword = "password";
 
     if (username && password)
-      if (username === mockedUsername && password === mockedPassword) {
-        let token = jwt.sign({ username }, secret, { expiresIn: "24h" });
-        // return the JWT token for the future API calls
-        res.json({
-          success: true,
-          message: "Authentication successful!",
-          token
-        });
-      } else {
-        res.send(403).json({
-          success: false,
-          message: "Incorrect username or password"
-        });
-      }
+      connection.query(SELECT_ALL_USERS, (err, results) => {
+        let User = JSON.parse(JSON.stringify(results)).find(
+          user =>
+            user.User_Login === username && user.User_Password === password
+        );
+        if (User) {
+          let token = jwt.sign({ username }, secret, { expiresIn: "24h" });
+          // return the JWT token for the future API calls
+          res.json({
+            resultCode: 0,
+            clientId: User.User_ClientId,
+            login: username,
+            message: "Authentication successful!",
+            token
+          });
+        } else {
+          res.status(403).send({
+            success: false,
+            message: "Incorrect username or password"
+          });
+        }
+      });
     else {
-      res.send(400).json({
+      res.status(400).send({
         success: false,
-        message: 'Authentication failed! Please check the request'
+        message: "Authentication failed! Please check the request"
       });
     }
   };
@@ -88,6 +59,7 @@ class HandlerGenerator {
   };
 
   getTariffs = (req, res) => {
+    console.log(req.query.clientId);
     connection.query(SELECT_ALL_TARIFFS_QUERY, (err, results) => {
       if (err) return res.send(err);
       else {
@@ -99,28 +71,6 @@ class HandlerGenerator {
   };
 }
 
-/*app.get("/tariffs", (req, res) => {
-  connection.query(SELECT_ALL_TARIFFS_QUERY, (err, results) => {
-    if (err) return res.send(err);
-    else {
-      return res.json({
-        data: results
-      });
-    }
-  });
-});*/
-
-/*app.get("/services", (req, res) => {
-  connection.query(SELECT_ALL_SERVICES_QUERY, (err, results) => {
-    if (err) return res.send(err);
-    else {
-      return res.json({
-        data: results
-      });
-    }
-  });
-});*/
-
 function main() {
   let app = express();
   let handlers = new HandlerGenerator();
@@ -130,8 +80,8 @@ function main() {
   app.use(cors());
   // Routes and handlers
   app.post("/login", handlers.login);
-  app.get("/services", handlers.getServices);
-  app.get("/tariffs", handlers.getTariffs);
+  app.get("/services", checkToken, handlers.getServices);
+  app.get("/tariffs", checkToken, handlers.getTariffs);
   app.listen(port, () => {
     console.log("Example app on port 1337!");
   });

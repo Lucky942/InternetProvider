@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {getServices} from "../../../api/api";
-import {setServices} from "../../../redux/servicesReducer";
+import { getServices } from "../../../api/api";
+import { setServices } from "../../../redux/servicesReducer";
 import Services from "./Services";
+import { Redirect } from "react-router-dom";
 
 class ServicesApiComponent extends Component {
   componentDidMount() {
@@ -14,17 +15,19 @@ class ServicesApiComponent extends Component {
   }
 
   render() {
+    let isAuth = this.props.isAuth;
     return (
-      <Services
-        services={this.props.services}
-      />
+      (isAuth && <Services services={this.props.services} />) || (
+        <Redirect to={"/login"} />
+      )
     );
   }
 }
 
 let mapStateToProps = state => {
   return {
-    services: state.servicesReducer.services
+    services: state.servicesReducer.services,
+    isAuth: state.auth.isAuth
   };
 };
 

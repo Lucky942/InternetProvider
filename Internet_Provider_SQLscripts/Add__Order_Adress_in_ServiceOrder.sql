@@ -1,0 +1,1 @@
+ALTER TABLE ServiceOrder ADD Order_Address varchar(255);
