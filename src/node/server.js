@@ -7,39 +7,52 @@ let checkToken = require("./middleware").checkToken;
 const SELECT_ALL_TARIFFS_QUERY = "SELECT * FROM Tariff";
 const SELECT_ALL_SERVICES_QUERY = "SELECT * FROM Service";
 const SELECT_ALL_USERS = "SELECT * FROM Users";
-const SELECT_USER_CONTRACT = "SELECT * FROM Contract Where Contract_ClientId = 1";
+const SELECT_USER_CONTRACT =
+  "SELECT * FROM Contract Where Contract_ClientId = ?";
 
-let connection = require("./dbconnect");
 
 class HandlerGenerator {
+  constructor(props) {
+    this.connection = require("./dbconnect");
+  }
+
   login = (req, res) => {
     let username = req.body.login;
     let password = req.body.password;
 
-    if (username && password)
-      connection.query(SELECT_ALL_USERS, (err, results) => {
-        let User = JSON.parse(JSON.stringify(results)).find(
-          user =>
-            user.User_Login === username && user.User_Password === password
-        );
-        if (User) {
+    if (username && password) {
+      this.query(SELECT_ALL_USERS)
+        .then(results => {
+          let User = JSON.parse(JSON.stringify(results)).find(
+            user =>
+              user.User_Login === username && user.User_Password === password
+          );
+          if (User) {
+            return this.query(SELECT_USER_CONTRACT, User.User_ClientId);
+          } else {
+            res.status(403).send({
+              success: false,
+              message: "Incorrect username or password"
+            });
+            throw new Error("Incorrect username or password");
+          }
+        })
+        .then(results => {
           let token = jwt.sign({ username }, secret, { expiresIn: "24h" });
+          let tariffId = results[0].Contract_TariffId,
+            clientId = results[0].Contract_ClientId;
           // return the JWT token for the future API calls
           res.json({
             resultCode: 0,
-            clientId: User.User_ClientId,
+            clientId,
             login: username,
+            tariffId,
             message: "Authentication successful!",
             token
           });
-        } else {
-          res.status(403).send({
-            success: false,
-            message: "Incorrect username or password"
-          });
-        }
-      });
-    else {
+        })
+        .catch(err => console.log(err));
+    } else {
       res.status(400).send({
         success: false,
         message: "Authentication failed! Please check the request"
@@ -48,25 +61,29 @@ class HandlerGenerator {
   };
 
   getServices = (req, res) => {
-    connection.query(SELECT_ALL_SERVICES_QUERY, (err, results) => {
-      if (err) return res.send(err);
-      else {
-        return res.json({
-          data: results
-        });
-      }
-    });
+    this.query(SELECT_ALL_SERVICES_QUERY).then(results =>
+      res.json({
+        data: results
+      })
+    );
   };
 
   getTariffs = (req, res) => {
-    console.log(req.query.clientId);
-    connection.query(SELECT_ALL_TARIFFS_QUERY, (err, results) => {
-      if (err) return res.send(err);
-      else {
-        return res.json({
+    this.query(SELECT_ALL_TARIFFS_QUERY)
+      .then(results =>
+        res.json({
           data: results
-        });
-      }
+        })
+      )
+      .catch(err => console.log(err));
+  };
+
+  query = (sql, args) => {
+    return new Promise((resolve, reject) => {
+      this.connection.query(sql, args, (err, rows) => {
+        if (err) return reject(err);
+        resolve(rows);
+      });
     });
   };
 }
@@ -86,5 +103,6 @@ function main() {
     console.log("Example app on port 1337!");
   });
 }
+
 
 main();

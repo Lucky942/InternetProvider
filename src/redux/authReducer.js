@@ -6,6 +6,7 @@ const SET_USER_DATA = "SET_USER_DATA";
 let initialState = {
   userId: null,
   login: null,
+  tariffId: null,
   isAuth: false
 };
 
@@ -15,22 +16,24 @@ const authReducer = (state = initialState, action) =>
       case SET_USER_DATA:
         draft.userId = action.payload.userId;
         draft.login = action.payload.login;
+        draft.tariffId = action.tariffId;
         draft.isAuth = action.payload.isAuth;
         break;
     }
   });
 
-export const setUserData = (userId, login, isAuth) => ({
+export const setUserData = (userId, login, tariffId, isAuth) => ({
   type: SET_USER_DATA,
-  payload: { userId, login, isAuth }
+  payload: { userId, login, tariffId, isAuth }
 });
 
 export const login = (login, password, rememberMe) => dispatch => {
   loginAPI(login, password, rememberMe).then(response => {
     localStorage.setItem("token", response.data.token);
     if (response.data.resultCode === 0) {
-      let { clientId, login } = response.data;
-      dispatch(setUserData(clientId, login, true));
+      debugger;
+      let { clientId, login, tariffId } = response.data;
+      dispatch(setUserData(clientId, login, tariffId,  true));
     }
   });
 };
