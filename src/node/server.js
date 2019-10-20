@@ -8,7 +8,9 @@ const SELECT_ALL_TARIFFS_QUERY = "SELECT * FROM Tariff";
 const SELECT_ALL_SERVICES_QUERY = "SELECT * FROM Service";
 const SELECT_ALL_USERS = "SELECT * FROM Users";
 const SELECT_USER_CONTRACT =
-  "SELECT * FROM Contract Where Contract_ClientId = ?";
+  "SELECT * FROM Contract WHERE Contract_ClientId = ?";
+const UPDATE_USER_CONTRACT =
+  "UPDATE Contract SET Contract_TariffId = ? WHERE Contract_ClientId = ?";
 
 class HandlerGenerator {
   constructor(props) {
@@ -69,7 +71,6 @@ class HandlerGenerator {
 
   getTariffs = (req, res) => {
     let tariffs;
-
     this.query(SELECT_ALL_TARIFFS_QUERY)
       .then(resultTariffs => {
         tariffs = JSON.parse(JSON.stringify(resultTariffs));
@@ -85,6 +86,30 @@ class HandlerGenerator {
         })
       )
       .catch(err => console.log(err));
+  };
+
+  changeTariff = (req, res) => {
+    let tariffId = req.body.tariffId;
+    this.query(SELECT_USER_CONTRACT, req.decoded.clientId).then(results => {
+      if (results[0].Contract_TariffId === tariffId)
+        this.query(UPDATE_USER_CONTRACT, [null, req.decoded.clientId]).then(
+          () =>
+            res.json({
+              data: {
+                resultCode: 0
+              }
+            })
+        );
+      else if (results[0].Contract_TariffId === null)
+        this.query(UPDATE_USER_CONTRACT, [tariffId, req.decoded.clientId]).then(
+          () =>
+            res.json({
+              data: {
+                resultCode: 0
+              }
+            })
+        );
+    });
   };
 
   query = (sql, args) => {
@@ -107,7 +132,13 @@ function main() {
   // Routes and handlers
   app.post("/login", handlers.login);
   app.get("/services", checkToken, handlers.getServices);
-  app.get("/tariffs", checkToken, handlers.getTariffs);
+/*  app.get("/tariffs", checkToken, handlers.getTariffs);
+  app.put("/tariffs", checkToken, handlers.changeTariff);*/
+  app.all("/tariffs", checkToken);
+  app
+    .route("/tariffs")
+    .get(handlers.getTariffs)
+    .put(handlers.changeTariff);
   app.listen(port, () => {
     console.log("Example app on port 1337!");
   });

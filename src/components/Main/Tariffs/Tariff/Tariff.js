@@ -12,7 +12,7 @@ const Tariff = ({ tariffName, tariffSpeed, tariffPrice, tariffId, changeTariffSt
       <h3>Тариф - {tariffName}</h3>
       <p>Максимальная скорость {tariffSpeed}</p>
       <div>Стоимость тарифа - {tariffPrice}</div>
-      <button onClick={handleClick}>{tariffId ?  "Отключить" : "Подключить"}</button>
+      <button className={styles.btn} onClick={handleClick}>{tariffId ?  "Отключить" : "Подключить"}</button>
     </div>
   );
 };

@@ -2,3 +2,49 @@
 .tariff {
 
 }
+
+.btn {
+    font: inherit;
+    cursor: pointer;
+
+    /* по-умолчанию для <button>, но пригодится для <a> */
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    /* создаём маленькие отступы, если кнопки перенесутся на две строки */
+    margin: 2px 0;
+    /* невидимая граница (понадобится для цвета при наведении/фокусе) */
+    border: solid 1px black;
+    border-radius: 4px;
+    /* размер строится из текста и отступов (без width/height) */
+    padding: 0.5em 1em;
+    /* убедитесь, что достаточно контраста! */
+    color: black;
+    background-color: rgba(246, 177, 146, 0.47);
+}
+
+/* олдскульный эффект «нажатия» + цветовые правки */
+.btn:active {
+    transform: translateY(1px);
+    filter: saturate(150%);
+}
+
+/* инвертируем цвета при наведении */
+.btn:hover{
+    color: black;
+    border-color: currentColor;
+    background-color: white;
+}
+
+.btn {
+    /* ... */
+    /* все браузеры: сбрасываем дефолтный outline,
+       так как у нас уже есть собственные стили*/
+    outline: none;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.5),
+    0 0 0 1.5px rgba(255, 105, 180, 0.5);
+}

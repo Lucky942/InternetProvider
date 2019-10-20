@@ -2,20 +2,21 @@ import * as axios from "axios";
 
 const instance = axios.create({
   headers: {
-    "x-access-token": localStorage.getItem('token'),
-    "clientId": localStorage.getItem('clientId')
+    "x-access-token": localStorage.getItem("token"),
+    clientId: localStorage.getItem("clientId")
   }
 });
 
-
 export const loginAPI = (login, password, rememberMe) => {
-  return axios
-      .post("http://localhost:1337/login", {login, password, rememberMe})
+  return axios.post("http://localhost:1337/login", {
+    login,
+    password,
+    rememberMe
+  });
 };
 
 export const logoutAPI = () => {
-  return axios
-      .delete("http://localhost:1337/logout");
+  return axios.delete("http://localhost:1337/logout");
 };
 
 export const getTariffsAPI = () => {
@@ -30,8 +31,8 @@ export const getServices = () => {
     .then(response => response.data);
 };
 
-export const changeTariffStatusApi = (clientId, tariffId) => {
-  return axios
-      .put("")
-
-}
+export const changeTariffStatusApi = tariffId => {
+  return instance
+    .put("http://localhost:1337/tariffs", { tariffId })
+    .then(response => response.data.data);
+};

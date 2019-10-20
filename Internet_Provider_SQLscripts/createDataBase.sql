@@ -76,7 +76,7 @@ Contract_Id int primary key auto_increment,
 Contract_ClientId int not null,
 Contract_ConclusionDate date not null,
 Contract_TerminationDate date,
-Contract_TariffId int not null,
+Contract_TariffId int,
 
 constraint FK_ContractToClient foreign key(Contract_ClientId) references Client(Client_Id),
 constraint FK_ContractToTariff foreign key(Contract_TariffId) references Tariff(Tariff_Id)

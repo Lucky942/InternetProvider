@@ -1,5 +1,5 @@
 import produce from "immer";
-import { getTariffsAPI, loginAPI } from "../api/api";
+import { changeTariffStatusApi, getTariffsAPI, loginAPI } from "../api/api";
 import { setUserData } from "./authReducer";
 
 const SET_TARIFFS = "SET_TARIFFS",
@@ -37,15 +37,14 @@ const tariffsReducer = (state = initialState, action) =>
   });
 
 export const setTariffStatus = tariffId => ({
-    type: CHANGE_TARIFF_STATUS,
-    tariffId
+  type: CHANGE_TARIFF_STATUS,
+  tariffId
 });
 
-export const changeTariffStatus = (tariffId) => dispatch => {
-    // changeTariffStatusApi(userId, tariffId).then(response => {
-    //if (response.data.resultCode === 0)
-    dispatch(setTariffStatus(tariffId));
-//  });
+export const changeTariffStatus = tariffId => dispatch => {
+  changeTariffStatusApi(tariffId).then(response => {
+    if (response.resultCode === 0) dispatch(setTariffStatus(tariffId));
+  });
 };
 
 export const setTariffs = (tariffs, tariffId) => ({
@@ -62,6 +61,5 @@ export const getTariffs = () => dispatch => {
     }
   });
 };
-
 
 export default tariffsReducer;

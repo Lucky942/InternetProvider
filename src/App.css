@@ -6,6 +6,7 @@
                        "main main"
                        "footer footer";
     grid-gap: 25px;
+
 }
 
 /*header*/
@@ -16,11 +17,15 @@
 /*main*/
 .main {
     grid-area: main;
-    background-color: #F6BF43;
+    background-color: #9F8370;
+
+    /*background-color: rgba(48, 88, 97, 0.83);*/
+    /*background-color: rgba(52, 97, 38, 0.82);*/
+    /*background-color: #F6BF43;*/
 }
 
 /*footer*/
 .footer {
     grid-area: footer;
-    background-color: #F6BF43;
+    /*background-color: #F6BF43;*/
 }
