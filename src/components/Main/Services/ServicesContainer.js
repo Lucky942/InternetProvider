@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import { getServices } from "../../../api/api";
 import { setServices } from "../../../redux/servicesReducer";
 import Services from "./Services";
-import { Redirect } from "react-router-dom";
+import withAuthRedirect from "../../../hoc/withAuthRedirect";
+import {compose} from "redux";
 
 class ServicesApiComponent extends Component {
   componentDidMount() {
@@ -15,23 +16,17 @@ class ServicesApiComponent extends Component {
   }
 
   render() {
-    let isAuth = this.props.isAuth;
-    return (
-      (isAuth && <Services services={this.props.services} />) || (
-        <Redirect to={"/login"} />
-      )
-    );
+    return <Services services={this.props.services} />;
   }
 }
 
 let mapStateToProps = state => {
   return {
-    services: state.servicesReducer.services,
-    isAuth: state.auth.isAuth
+    services: state.servicesReducer.services
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { setServices }
-)(ServicesApiComponent);
+export default compose(connect(
+    mapStateToProps,
+    { setServices }
+),withAuthRedirect)(ServicesApiComponent);

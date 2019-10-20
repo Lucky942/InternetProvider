@@ -8,6 +8,7 @@ const Tariffs = props => {
       {props.tariffs.map((elem, i) =>
         props.tariffId - 1 === i ? (
           <Tariff
+            key={i}
             i={i}
             tariffId={props.tariffId}
             tariffName={elem.Tariff_Name}
@@ -17,6 +18,7 @@ const Tariffs = props => {
           />
         ) : (
           <Tariff
+            key={i}
             i={i}
             tariffName={elem.Tariff_Name}
             tariffSpeed={elem.Tariff_MaxSpeed}

@@ -2,7 +2,6 @@ import React from "react";
 import styles from "./Tariff.module.css";
 
 const Tariff = ({ tariffName, tariffSpeed, tariffPrice, tariffId, changeTariffStatus, i }) => {
-    console.log(tariffName + " " + i);
     let handleClick = () => {
         changeTariffStatus(i + 1);
     };

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Tariffs from "./Tariffs";
-import { Redirect } from "react-router-dom";
-import {changeTariffStatus, getTariffs} from "../../../redux/tariffsReducer";
+import { changeTariffStatus, getTariffs } from "../../../redux/tariffsReducer";
+import withAuthRedirect from "../../../hoc/withAuthRedirect";
+import { compose } from "redux";
 
 class TariffsApiComponent extends Component {
   componentDidMount() {
@@ -10,29 +11,30 @@ class TariffsApiComponent extends Component {
   }
 
   render() {
-    let isAuth = this.props.isAuth;
-
     return (
-      (isAuth && (
-        <Tariffs
-          tariffId={this.props.tariffId}
-          tariffs={this.props.tariffs}
-          changeTariffStatus={this.props.changeTariffStatus}
-        />
-      )) || <Redirect to={"/login"} />
+      <Tariffs
+        tariffId={this.props.tariffId}
+        tariffs={this.props.tariffs}
+        changeTariffStatus={this.props.changeTariffStatus}
+      />
     );
   }
 }
 
+
 let mapStateToProps = state => {
   return {
     tariffs: state.tariffsReducer.tariffs,
-    tariffId: state.tariffsReducer.tariffId,
-    isAuth: state.auth.isAuth
+    tariffId: state.tariffsReducer.tariffId
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { getTariffs, changeTariffStatus }
+
+
+export default compose(
+    connect(
+        mapStateToProps,
+        { getTariffs, changeTariffStatus }
+    ),
+    withAuthRedirect
 )(TariffsApiComponent);

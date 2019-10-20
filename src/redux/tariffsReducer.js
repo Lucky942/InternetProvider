@@ -1,6 +1,5 @@
 import produce from "immer";
 import { changeTariffStatusApi, getTariffsAPI, loginAPI } from "../api/api";
-import { setUserData } from "./authReducer";
 
 const SET_TARIFFS = "SET_TARIFFS",
   CHANGE_TARIFF_STATUS = "CHANGE_TARIFF_STATUS";
