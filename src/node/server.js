@@ -10,7 +10,6 @@ const SELECT_ALL_USERS = "SELECT * FROM Users";
 const SELECT_USER_CONTRACT =
   "SELECT * FROM Contract Where Contract_ClientId = ?";
 
-
 class HandlerGenerator {
   constructor(props) {
     this.connection = require("./dbconnect");
@@ -38,9 +37,9 @@ class HandlerGenerator {
           }
         })
         .then(results => {
-          let token = jwt.sign({ username }, secret, { expiresIn: "24h" });
           let tariffId = results[0].Contract_TariffId,
             clientId = results[0].Contract_ClientId;
+          let token = jwt.sign({ clientId }, secret, { expiresIn: "24h" });
           // return the JWT token for the future API calls
           res.json({
             resultCode: 0,
@@ -69,10 +68,20 @@ class HandlerGenerator {
   };
 
   getTariffs = (req, res) => {
+    let tariffs;
+
     this.query(SELECT_ALL_TARIFFS_QUERY)
-      .then(results =>
+      .then(resultTariffs => {
+        tariffs = JSON.parse(JSON.stringify(resultTariffs));
+        return this.query(SELECT_USER_CONTRACT, req.decoded.clientId);
+      })
+      .then(resultUserContract =>
         res.json({
-          data: results
+          data: {
+            resultCode: 0,
+            tariffId: resultUserContract[0].Contract_TariffId,
+            tariffs
+          }
         })
       )
       .catch(err => console.log(err));
@@ -103,6 +112,5 @@ function main() {
     console.log("Example app on port 1337!");
   });
 }
-
 
 main();

@@ -5,14 +5,26 @@ import Tariff from "./Tariff/Tariff";
 const Tariffs = props => {
   return (
     <div className={styles.tariffs}>
-      {props.tariffs.map((elem, i) => (
-        <Tariff
-          key={i}
-          tariffName={elem.Tariff_Name}
-          tariffSpeed={elem.Tariff_MaxSpeed}
-          tariffPrice={elem.Tariff_Price}
-        />
-      ))}
+      {props.tariffs.map((elem, i) =>
+        props.tariffId - 1 === i ? (
+          <Tariff
+            i={i}
+            tariffId={props.tariffId}
+            tariffName={elem.Tariff_Name}
+            tariffSpeed={elem.Tariff_MaxSpeed}
+            tariffPrice={elem.Tariff_Price}
+            changeTariffStatus={props.changeTariffStatus}
+          />
+        ) : (
+          <Tariff
+            i={i}
+            tariffName={elem.Tariff_Name}
+            tariffSpeed={elem.Tariff_MaxSpeed}
+            tariffPrice={elem.Tariff_Price}
+            changeTariffStatus={props.changeTariffStatus}
+          />
+        )
+      )}
     </div>
   );
 };

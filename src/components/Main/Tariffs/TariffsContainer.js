@@ -1,27 +1,25 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { setTariffs } from "../../../redux/tariffsReducer";
 import Tariffs from "./Tariffs";
-import { getTariffs } from "../../../api/api";
-import Services from "../Services/Services";
 import { Redirect } from "react-router-dom";
+import {changeTariffStatus, getTariffs} from "../../../redux/tariffsReducer";
 
 class TariffsApiComponent extends Component {
   componentDidMount() {
-    getTariffs(this.props.clientId)
-      .then(response => {
-        this.props.setTariffs(response.data);
-      })
-      .catch(err => console.error(err));
+    this.props.getTariffs();
   }
 
   render() {
     let isAuth = this.props.isAuth;
 
     return (
-      (isAuth && <Tariffs tariffs={this.props.tariffs} />) || (
-        <Redirect to={"/login"} />
-      )
+      (isAuth && (
+        <Tariffs
+          tariffId={this.props.tariffId}
+          tariffs={this.props.tariffs}
+          changeTariffStatus={this.props.changeTariffStatus}
+        />
+      )) || <Redirect to={"/login"} />
     );
   }
 }
@@ -29,12 +27,12 @@ class TariffsApiComponent extends Component {
 let mapStateToProps = state => {
   return {
     tariffs: state.tariffsReducer.tariffs,
-    clientId: state.auth.userId,
+    tariffId: state.tariffsReducer.tariffId,
     isAuth: state.auth.isAuth
   };
 };
 
 export default connect(
   mapStateToProps,
-  { setTariffs }
+  { getTariffs, changeTariffStatus }
 )(TariffsApiComponent);

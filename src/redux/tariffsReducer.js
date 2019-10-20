@@ -1,6 +1,9 @@
 import produce from "immer";
+import { getTariffsAPI, loginAPI } from "../api/api";
+import { setUserData } from "./authReducer";
 
-const SET_TARIFFS = "SET_TARIFFS";
+const SET_TARIFFS = "SET_TARIFFS",
+  CHANGE_TARIFF_STATUS = "CHANGE_TARIFF_STATUS";
 
 let initialState = {
   tariffs: []
@@ -16,15 +19,49 @@ let initialState = {
 //       return state;
 //   }
 // };
+
 const tariffsReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case SET_TARIFFS:
         draft.tariffs = action.tariffs;
+        draft.tariffId = action.tariffId;
+        break;
+
+      case CHANGE_TARIFF_STATUS:
+        if (draft.tariffId === action.tariffId) draft.tariffId = null;
+        else if (!draft.tariffId) draft.tariffId = action.tariffId;
+        //draft.tariffId = draft.tariffId ? null : action.tariffId;
         break;
     }
   });
 
-export const setTariffs = tariffs => ({ type: SET_TARIFFS, tariffs });
+export const setTariffStatus = tariffId => ({
+    type: CHANGE_TARIFF_STATUS,
+    tariffId
+});
+
+export const changeTariffStatus = (tariffId) => dispatch => {
+    // changeTariffStatusApi(userId, tariffId).then(response => {
+    //if (response.data.resultCode === 0)
+    dispatch(setTariffStatus(tariffId));
+//  });
+};
+
+export const setTariffs = (tariffs, tariffId) => ({
+  type: SET_TARIFFS,
+  tariffs,
+  tariffId
+});
+
+export const getTariffs = () => dispatch => {
+  getTariffsAPI().then(response => {
+    if (response.resultCode === 0) {
+      let { tariffs, tariffId } = response;
+      dispatch(setTariffs(tariffs, tariffId));
+    }
+  });
+};
+
 
 export default tariffsReducer;
