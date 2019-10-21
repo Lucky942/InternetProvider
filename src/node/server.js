@@ -48,15 +48,15 @@ class HandlerGenerator {
           }
         })
         .then(results => {
-          let tariffId = results[0].Contract_TariffId,
-            clientId = results[0].Contract_ClientId;
-          let token = jwt.sign({ clientId, username }, secret, { expiresIn: "24h" });
+          let clientId = results[0].Contract_ClientId;
+          let token = jwt.sign({ clientId, username }, secret, {
+            expiresIn: "24h"
+          });
           // return the JWT token for the future API calls
           res.json({
             resultCode: 0,
             clientId,
             login: username,
-            message: "Authentication successful!",
             token
           });
         })
@@ -79,26 +79,19 @@ class HandlerGenerator {
 
   getTariffs = (req, res) => {
     let tariffs;
-    console.log("In get tarif server");
     this.query(SELECT_ALL_TARIFFS_QUERY)
       .then(resultTariffs => {
         tariffs = JSON.parse(JSON.stringify(resultTariffs));
         return this.query(SELECT_USER_CONTRACT, req.decoded.clientId);
       })
       .then(resultUserContract =>
-        {
-          console.log({
-            resultCode: 0,
-            tariffId: resultUserContract[0].Contract_TariffId,
-            tariffs
-          });
-          res.json({
+        res.json({
           data: {
             resultCode: 0,
             tariffId: resultUserContract[0].Contract_TariffId,
             tariffs
           }
-        })}
+        })
       )
       .catch(err => console.log(err));
   };
@@ -148,7 +141,7 @@ function main() {
   // Routes and handlers
   app.post("/login", handlers.login);
   app.get("/services", checkToken, handlers.getServices);
-  app.get("/auth/me", checkToken, handlers.authMe)
+  app.get("/auth/me", checkToken, handlers.authMe);
   /*  app.get("/tariffs", checkToken, handlers.getTariffs);
   app.put("/tariffs", checkToken, handlers.changeTariff);*/
   app.all("/tariffs", checkToken);

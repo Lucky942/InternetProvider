@@ -1,5 +1,5 @@
 import produce from "immer";
-import { authMe, loginAPI, logoutAPI } from "../api/api";
+import {authMe, loginAPI, logoutAPI} from "../api/api";
 
 const SET_USER_DATA = "SET_USER_DATA";
 
@@ -38,7 +38,6 @@ export const login = (login, password, rememberMe) => dispatch => {
   loginAPI(login, password, rememberMe).then(response => {
     if (response.data.resultCode === 0) {
       localStorage.setItem("token", response.data.token);
-      debugger;
       let { clientId, login } = response.data;
       dispatch(setUserData(clientId, login, true));
     }
