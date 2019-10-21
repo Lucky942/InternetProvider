@@ -10,6 +10,8 @@ let checkToken = (req, res, next) => {
         token = token.slice(7, token.length);
     }
 
+    console.log(req.headers["x-access-token"]);
+
     if (token) {
 
         jwt.verify(token, config.secret, (err, decoded) => {

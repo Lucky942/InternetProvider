@@ -1,25 +1,36 @@
-import React from "react";
+import React, {Component} from "react";
 import "./App.css";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Footer from "./components/Footer/Footer";
-import {BrowserRouter} from "react-router-dom";
-import {Provider} from "react-redux";
-import store from "./redux/reduxStore";
+import {connect} from "react-redux";
+import {initializeApp} from "./redux/appReducer";
 
 
-const App = () => {
-  return (
-    <BrowserRouter>
-        <Provider store={store}>
-            <div className="app">
-                <Header/>
-                <Main/>
-                {/*<Footer/>*/}
-            </div>
-        </Provider>
-    </BrowserRouter>
-  );
-};
+class App extends Component {
 
-export default App;
+    componentDidMount() {
+        this.props.initializeApp();
+    }
+
+    render() {
+
+        if(!this.props.initialized) return "Loading";
+
+        return (
+
+                    <div className="app">
+                        <Header/>
+                        <Main/>
+                        {/*<Footer/>*/}
+                    </div>
+        );
+    }
+}
+
+
+let mapStateToProps = (state) => ({
+    initialized: state.app.initialized
+});
+
+export default connect(mapStateToProps, {initializeApp})(App);

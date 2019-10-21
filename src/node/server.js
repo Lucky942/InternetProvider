@@ -17,6 +17,15 @@ class HandlerGenerator {
     this.connection = require("./dbconnect");
   }
 
+  authMe = (req, res) => {
+    res.json({
+      resultCode: 0,
+      clientId: req.decoded.clientId,
+      login: req.decoded.username,
+      message: "Authentication successful!"
+    });
+  };
+
   login = (req, res) => {
     let username = req.body.login;
     let password = req.body.password;
@@ -41,13 +50,12 @@ class HandlerGenerator {
         .then(results => {
           let tariffId = results[0].Contract_TariffId,
             clientId = results[0].Contract_ClientId;
-          let token = jwt.sign({ clientId }, secret, { expiresIn: "24h" });
+          let token = jwt.sign({ clientId, username }, secret, { expiresIn: "24h" });
           // return the JWT token for the future API calls
           res.json({
             resultCode: 0,
             clientId,
             login: username,
-            tariffId,
             message: "Authentication successful!",
             token
           });
@@ -71,25 +79,33 @@ class HandlerGenerator {
 
   getTariffs = (req, res) => {
     let tariffs;
+    console.log("In get tarif server");
     this.query(SELECT_ALL_TARIFFS_QUERY)
       .then(resultTariffs => {
         tariffs = JSON.parse(JSON.stringify(resultTariffs));
         return this.query(SELECT_USER_CONTRACT, req.decoded.clientId);
       })
       .then(resultUserContract =>
-        res.json({
+        {
+          console.log({
+            resultCode: 0,
+            tariffId: resultUserContract[0].Contract_TariffId,
+            tariffs
+          });
+          res.json({
           data: {
             resultCode: 0,
             tariffId: resultUserContract[0].Contract_TariffId,
             tariffs
           }
-        })
+        })}
       )
       .catch(err => console.log(err));
   };
 
   changeTariff = (req, res) => {
     let tariffId = req.body.tariffId;
+
     this.query(SELECT_USER_CONTRACT, req.decoded.clientId).then(results => {
       if (results[0].Contract_TariffId === tariffId)
         this.query(UPDATE_USER_CONTRACT, [null, req.decoded.clientId]).then(
@@ -132,7 +148,8 @@ function main() {
   // Routes and handlers
   app.post("/login", handlers.login);
   app.get("/services", checkToken, handlers.getServices);
-/*  app.get("/tariffs", checkToken, handlers.getTariffs);
+  app.get("/auth/me", checkToken, handlers.authMe)
+  /*  app.get("/tariffs", checkToken, handlers.getTariffs);
   app.put("/tariffs", checkToken, handlers.changeTariff);*/
   app.all("/tariffs", checkToken);
   app

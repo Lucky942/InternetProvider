@@ -1,8 +1,7 @@
 import produce from "immer";
-import { loginAPI, logoutAPI } from "../api/api";
+import { authMe, loginAPI, logoutAPI } from "../api/api";
 
-const SET_USER_DATA = "SET_USER_DATA",
-  CHANGE_TARIFF_STATUS = "CHANGE_TARIFF_STATUS";
+const SET_USER_DATA = "SET_USER_DATA";
 
 let initialState = {
   userId: null,
@@ -26,12 +25,20 @@ export const setUserData = (userId, login, isAuth) => ({
   payload: { userId, login, isAuth }
 });
 
-
+export const getAuthUserData = () => async dispatch => {
+  return authMe().then(response => {
+    if (response.data.resultCode === 0) {
+      let { clientId, login } = response.data;
+      dispatch(setUserData(clientId, login, true));
+    }
+  });
+};
 
 export const login = (login, password, rememberMe) => dispatch => {
   loginAPI(login, password, rememberMe).then(response => {
     if (response.data.resultCode === 0) {
       localStorage.setItem("token", response.data.token);
+      debugger;
       let { clientId, login } = response.data;
       dispatch(setUserData(clientId, login, true));
     }

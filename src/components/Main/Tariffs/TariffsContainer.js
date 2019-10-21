@@ -23,14 +23,14 @@ class TariffsApiComponent extends Component {
 
 
 let mapStateToProps = state => {
+  debugger;
   return {
     tariffs: state.tariffsReducer.tariffs,
     tariffId: state.tariffsReducer.tariffId
   };
 };
 
-
-
+console.log("Tariff");
 export default compose(
     connect(
         mapStateToProps,

@@ -25,6 +25,7 @@ let mapStateToProps = state => {
     services: state.servicesReducer.services
   };
 };
+console.log("Service");
 
 export default compose(connect(
     mapStateToProps,

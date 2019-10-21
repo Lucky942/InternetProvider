@@ -3,6 +3,7 @@ import styles from "./Services.module.css";
 import Service from "./Service/Service";
 
 const Services = props => {
+  console.log("hi");
   return (
     <div className={styles.services}>
       {props.services.map((elem, i) => (
