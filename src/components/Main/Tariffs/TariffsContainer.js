@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Tariffs from "./Tariffs";
-import { changeTariffStatus, getTariffs } from "../../../redux/tariffsReducer";
+import { changeTariffStatus, requestTariffs } from "../../../redux/tariffsReducer";
 import withAuthRedirect from "../../../hoc/withAuthRedirect";
 import { compose } from "redux";
+import {getTariffId, getTariffs} from "../../../redux/Selectors/tariffsSelectors";
 
 class TariffsApiComponent extends Component {
   componentDidMount() {
@@ -23,18 +24,16 @@ class TariffsApiComponent extends Component {
 
 
 let mapStateToProps = state => {
-  debugger;
   return {
-    tariffs: state.tariffsReducer.tariffs,
-    tariffId: state.tariffsReducer.tariffId
+    tariffs: getTariffs(state),
+    tariffId: getTariffId(state)
   };
 };
 
-console.log("Tariff");
 export default compose(
     connect(
         mapStateToProps,
-        { getTariffs, changeTariffStatus }
+        { getTariffs: requestTariffs, changeTariffStatus }
     ),
     withAuthRedirect
 )(TariffsApiComponent);

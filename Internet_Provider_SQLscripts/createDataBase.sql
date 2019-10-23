@@ -1,3 +1,6 @@
+CREATE database IF NOT EXISTS InternetProvider;
+USE InternetProvider;
+
 create table Client
 (
 Client_Id int primary key auto_increment, 

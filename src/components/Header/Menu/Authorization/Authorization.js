@@ -9,8 +9,8 @@ const Authorization = props => {
   return (
     <div className={classnames(styles.authorization, "authorization")}>
       {props.isAuth ? (
-        <Authorized userName = {props.userName}/>
-      ): (
+        <Authorized logout={props.logout} userName={props.userName} />
+      ) : (
         <ul className={styles.login}>
           <li className={styles.menuItem}>
             <NavLink to="/login">Войти</NavLink>

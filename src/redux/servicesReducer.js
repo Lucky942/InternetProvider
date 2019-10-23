@@ -1,4 +1,5 @@
 import produce from "immer";
+import {getServicesAPI} from "../api/api";
 
 const SET_SERVICES = "SET_SERVICES";
 
@@ -16,5 +17,12 @@ const servicesReducer = (state = initialState, action) =>
   });
 
 export const setServices = services => ({ type: SET_SERVICES, services });
+
+export const getServices = () => (dispatch) => {
+    getServicesAPI()
+        .then(response => {
+            dispatch(setServices(response.data));
+        })
+};
 
 export default servicesReducer;

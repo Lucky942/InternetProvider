@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getServices } from "../../../api/api";
-import { setServices } from "../../../redux/servicesReducer";
 import Services from "./Services";
 import withAuthRedirect from "../../../hoc/withAuthRedirect";
 import {compose} from "redux";
+import {getServices} from "../../../redux/servicesReducer";
 
 class ServicesApiComponent extends Component {
   componentDidMount() {
-    getServices()
+    this.props.getServices();
+/*    getServices()
       .then(response => {
         this.props.setServices(response.data);
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error(err));*/
   }
 
   render() {
@@ -25,9 +25,8 @@ let mapStateToProps = state => {
     services: state.servicesReducer.services
   };
 };
-console.log("Service");
 
 export default compose(connect(
     mapStateToProps,
-    { setServices }
+    { getServices }
 ),withAuthRedirect)(ServicesApiComponent);

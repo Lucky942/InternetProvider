@@ -18,13 +18,30 @@ const instance = axios.create({
   }
 });*/
 
+axios.interceptors.request.use(function(config) {
+    const token = localStorage.getItem("token");
+
+    if ( token != null ) {
+        config.headers.authorization = `Bearer ${token}`;
+    }
+
+    return config;
+}, function(err) {
+    return Promise.reject(err);
+});
+
+/*
 export const authMe = () => {
-  debugger;
   return axios.get("http://localhost:1337/auth/me", {
       headers: {
           "x-access-token": localStorage.getItem("token")
       }
   });
+};
+*/
+
+export const authMe = () => {
+  return axios.get("http://localhost:1337/auth/me");
 };
 
 export const loginAPI = (login, password, rememberMe) => {
@@ -39,16 +56,14 @@ export const logoutAPI = () => {
   return axios.delete("http://localhost:1337/logout");
 };
 
-/*export const getTariffsAPI = () => {
-  return instance
+export const getTariffsAPI = () => {
+  return axios
     .get(`http://localhost:1337/tariffs`)
     .then(response => {
-      debugger;
-      console.log(JSON.stringify(response.data.headers));
       return response.data.data});
-};*/
+};
 
-export const getTariffsAPI = () => {
+/*export const getTariffsAPI = () => {
   return axios
       .get(`http://localhost:1337/tariffs`, {
         headers: {
@@ -56,16 +71,22 @@ export const getTariffsAPI = () => {
         }
       })
       .then(response => response.data.data);
-};
+};*/
 
 
-export const getServices = () => {
+/*export const getServices = () => {
   return axios
     .get("http://localhost:1337/services", {
         headers: {
             "x-access-token": localStorage.getItem("token")
         }
     })
+    .then(response => response.data);
+};*/
+
+export const getServicesAPI = () => {
+  return axios
+    .get("http://localhost:1337/services")
     .then(response => response.data);
 };
 
@@ -77,6 +98,7 @@ export const changeTariffStatusApi = tariffId => {
 };
 */
 
+/*
 export const changeTariffStatusApi = tariffId => {
   return axios
       .put("http://localhost:1337/tariffs", { tariffId },{
@@ -84,5 +106,12 @@ export const changeTariffStatusApi = tariffId => {
           "x-access-token": localStorage.getItem("token")
         }
       })
+      .then(response => response.data.data);
+};
+*/
+
+export const changeTariffStatusApi = tariffId => {
+  return axios
+      .put("http://localhost:1337/tariffs", { tariffId })
       .then(response => response.data.data);
 };

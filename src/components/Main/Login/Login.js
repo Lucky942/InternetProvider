@@ -1,34 +1,42 @@
 import React from "react";
 import styles from "./Login.module.css";
+import formStyle from "../../../components/Common/FormControls/FormsControls.module.css"
 import { Field, reduxForm } from "redux-form";
-import { required } from "../../../utils/validators/validators.jsx";
+import { required, maxLengthCreator } from "../../../utils/validators/validators.js";
 import { NavLink, Redirect } from "react-router-dom";
+import Input from "../../Common/FormControls/FormsControls";
+
+const maxLength10 = maxLengthCreator(10);
 
 const LoginForm = props => {
   return (
-    <div>
+    <div className={styles.login}>
       Login
       <form onSubmit={props.handleSubmit}>
         <div>
           <Field
-            placeholder="login"
             name={"login"}
-            component={"input"}
-            validate={[required]}
+            component={Input}
+            label={"login"}
+            validate={[required, maxLength10]}
           />
         </div>
         <div>
           <Field
-            placeholder="password"
+            label="password"
             name={"password"}
-            component={"input"}
+            component={Input}
             type={"password"}
+            validate={[required, maxLength10]}
           />
         </div>
         <div>
-          <Field component={"input"} name={"rememberMe"} type={"checkbox"} />{" "}
+          <Field component={Input} name={"rememberMe"} type={"checkbox"} />{" "}
           Remember me
         </div>
+        {props.error && <div className={formStyle.formSummaryError}>
+          {props.error}
+        </div>}
         <div>
           <button>Login</button>
         </div>
@@ -50,7 +58,7 @@ const Login = props => {
 
   return (
     (props.isAuth && <Redirect to={"/tariffs"} />) || (
-      <div className={styles.login}>
+      <div >
         <LoginReduxForm onSubmit={onSubmit} />
       </div>
     )

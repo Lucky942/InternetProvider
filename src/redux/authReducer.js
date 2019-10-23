@@ -1,5 +1,6 @@
 import produce from "immer";
 import {authMe, loginAPI, logoutAPI} from "../api/api";
+import {stopSubmit} from "redux-form";
 
 const SET_USER_DATA = "SET_USER_DATA";
 
@@ -41,14 +42,14 @@ export const login = (login, password, rememberMe) => dispatch => {
       let { clientId, login } = response.data;
       dispatch(setUserData(clientId, login, true));
     }
+    else {
+      dispatch(stopSubmit("login", {_error: response.data.message}));
+    }
   });
 };
 export const logout = () => dispatch => {
-  logoutAPI().then(response => {
-    if (response.data.resultCode === 0) {
-      dispatch(setUserData(null, null, true));
-    }
-  });
+  localStorage.removeItem("token");
+  dispatch(setUserData(null, null, false));
 };
 
 export default authReducer;

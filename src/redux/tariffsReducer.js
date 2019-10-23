@@ -52,7 +52,7 @@ export const setTariffs = (tariffs, tariffId) => ({
   tariffId
 });
 
-export const getTariffs = () => dispatch => {
+export const requestTariffs = () => dispatch => {
   getTariffsAPI().then(response => {
     if (response.resultCode === 0) {
       let { tariffs, tariffId } = response;

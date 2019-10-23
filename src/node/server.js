@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 let jwt = require("jsonwebtoken");
-let secret = require("./middleware").config.secret;
-let checkToken = require("./middleware").checkToken;
+let secret = require("./authorization/middleware").config.secret;
+let checkToken = require("./authorization/middleware").checkToken;
 
 const SELECT_ALL_TARIFFS_QUERY = "SELECT * FROM Tariff";
 const SELECT_ALL_SERVICES_QUERY = "SELECT * FROM Service";
@@ -14,7 +14,7 @@ const UPDATE_USER_CONTRACT =
 
 class HandlerGenerator {
   constructor(props) {
-    this.connection = require("./dbconnect");
+    this.connection = require("./db/dbconnect");
   }
 
   authMe = (req, res) => {
@@ -40,7 +40,11 @@ class HandlerGenerator {
           if (User) {
             return this.query(SELECT_USER_CONTRACT, User.User_ClientId);
           } else {
-            res.status(403).send({
+            /*res.status(403).send({
+              success: false,
+              message: "Incorrect username or password"
+            });*/
+            res.send({
               success: false,
               message: "Incorrect username or password"
             });
