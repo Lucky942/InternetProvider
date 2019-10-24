@@ -52,13 +52,12 @@ export const setTariffs = (tariffs, tariffId) => ({
   tariffId
 });
 
-export const requestTariffs = () => dispatch => {
-  getTariffsAPI().then(response => {
+export const requestTariffs = () => async dispatch => {
+  let response = await getTariffsAPI();
     if (response.resultCode === 0) {
       let { tariffs, tariffId } = response;
       dispatch(setTariffs(tariffs, tariffId));
     }
-  });
 };
 
 export default tariffsReducer;

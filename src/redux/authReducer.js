@@ -1,6 +1,6 @@
 import produce from "immer";
-import {authMe, loginAPI, logoutAPI} from "../api/api";
-import {stopSubmit} from "redux-form";
+import { authMe, loginAPI, logoutAPI } from "../api/api";
+import { stopSubmit } from "redux-form";
 
 const SET_USER_DATA = "SET_USER_DATA";
 
@@ -27,25 +27,22 @@ export const setUserData = (userId, login, isAuth) => ({
 });
 
 export const getAuthUserData = () => async dispatch => {
-  return authMe().then(response => {
-    if (response.data.resultCode === 0) {
-      let { clientId, login } = response.data;
-      dispatch(setUserData(clientId, login, true));
-    }
-  });
+  let response = await authMe();
+  if (response.data.resultCode === 0) {
+    let { clientId, login } = response.data;
+    dispatch(setUserData(clientId, login, true));
+  }
 };
 
-export const login = (login, password, rememberMe) => dispatch => {
-  loginAPI(login, password, rememberMe).then(response => {
-    if (response.data.resultCode === 0) {
-      localStorage.setItem("token", response.data.token);
-      let { clientId, login } = response.data;
-      dispatch(setUserData(clientId, login, true));
-    }
-    else {
-      dispatch(stopSubmit("login", {_error: response.data.message}));
-    }
-  });
+export const login = (login, password, rememberMe) => async dispatch => {
+  let response = await loginAPI(login, password, rememberMe);
+  if (response.data.resultCode === 0) {
+    localStorage.setItem("token", response.data.token);
+    let { clientId, login } = response.data;
+    dispatch(setUserData(clientId, login, true));
+  } else {
+    dispatch(stopSubmit("login", { _error: response.data.message }));
+  }
 };
 export const logout = () => dispatch => {
   localStorage.removeItem("token");

@@ -2,11 +2,10 @@ import React from "react";
 import styles from "./Services.module.css";
 import Service from "./Service/Service";
 
-const Services = props => {
-  console.log("hi");
+const Services = ({services}) => {
   return (
     <div className={styles.services}>
-      {props.services.map((elem, i) => (
+      {services.map((elem, i) => (
         <Service
           key={i}
           serviceName={elem.Service_Name}

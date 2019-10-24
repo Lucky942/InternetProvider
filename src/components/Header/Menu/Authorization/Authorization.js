@@ -5,11 +5,11 @@ import classnames from "classnames";
 import { NavLink } from "react-router-dom";
 import Authorized from "./Authorized/Authorized";
 
-const Authorization = props => {
+const Authorization = ({logout, userName, isAuth}) => {
   return (
     <div className={classnames(styles.authorization, "authorization")}>
-      {props.isAuth ? (
-        <Authorized logout={props.logout} userName={props.userName} />
+      {isAuth ? (
+        <Authorized logout={logout} userName={userName} />
       ) : (
         <ul className={styles.login}>
           <li className={styles.menuItem}>

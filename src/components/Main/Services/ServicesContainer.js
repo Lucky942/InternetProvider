@@ -3,9 +3,11 @@ import { connect } from "react-redux";
 import Services from "./Services";
 import withAuthRedirect from "../../../hoc/withAuthRedirect";
 import {compose} from "redux";
-import {getServices} from "../../../redux/servicesReducer";
+import {requestServices} from "../../../redux/servicesReducer";
+import {getServices} from "../../../redux/Selectors/servicesSelectors";
 
 class ServicesApiComponent extends Component {
+  
   componentDidMount() {
     this.props.getServices();
 /*    getServices()
@@ -22,11 +24,11 @@ class ServicesApiComponent extends Component {
 
 let mapStateToProps = state => {
   return {
-    services: state.servicesReducer.services
+    services: getServices(state)
   };
 };
 
 export default compose(connect(
     mapStateToProps,
-    { getServices }
+    { getServices: requestServices }
 ),withAuthRedirect)(ServicesApiComponent);

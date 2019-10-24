@@ -1,14 +1,14 @@
 import React from "react";
 import styles from "./Authorized.module.css";
 
-const Authorized = props => {
+const Authorized = ({logout, userName}) => {
   let handleLogout = () => {
-    props.logout();
+    logout();
   };
 
   return (
     <div className={styles.authorized}>
-      {props.userName}
+      {userName}
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
