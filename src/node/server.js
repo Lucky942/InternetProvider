@@ -11,6 +11,12 @@ const SELECT_USER_CONTRACT =
   "SELECT * FROM Contract WHERE Contract_ClientId = ?";
 const UPDATE_USER_CONTRACT =
   "UPDATE Contract SET Contract_TariffId = ? WHERE Contract_ClientId = ?";
+const SELECT_TARIFFS_STAT =
+  "SELECT Tariff_Name, Tariff_MaxSpeed, Tariff_Price, COUNT(*) as Amount FROM Contract, Tariff " +
+  "WHERE  Contract.Contract_TariffId = Tariff.Tariff_Id GROUP BY Contract_TariffId";
+// mounters
+const SELECT_STAFF =
+  "SELECT Mounter_Id, Mounter_FirstName, Mounter_LastName, Mounter_Passport, Mounter_Birthday, Mounter_EmploymentDate from Mounter";
 
 class HandlerGenerator {
   constructor(props) {
@@ -18,53 +24,62 @@ class HandlerGenerator {
   }
 
   authMe = (req, res) => {
+    let { clientId, login, userRole } = req.decoded;
     res.json({
       resultCode: 0,
-      clientId: req.decoded.clientId,
-      login: req.decoded.username,
+      clientId,
+      login,
+      userRole,
       message: "Authentication successful!"
     });
   };
 
-  login = (req, res) => {
-    let username = req.body.login;
-    let password = req.body.password;
+  login = async (req, res) => {
+    let { login, password } = req.body;
 
-    if (username && password) {
-      this.query(SELECT_ALL_USERS)
-        .then(results => {
-          let User = JSON.parse(JSON.stringify(results)).find(
-            user =>
-              user.User_Login === username && user.User_Password === password
-          );
-          if (User) {
-            return this.query(SELECT_USER_CONTRACT, User.User_ClientId);
-          } else {
-            /*res.status(403).send({
-              success: false,
-              message: "Incorrect username or password"
-            });*/
-            res.send({
-              success: false,
-              message: "Incorrect username or password"
-            });
-            throw new Error("Incorrect username or password");
-          }
-        })
-        .then(results => {
-          let clientId = results[0].Contract_ClientId;
-          let token = jwt.sign({ clientId, username }, secret, {
-            expiresIn: "24h"
-          });
-          // return the JWT token for the future API calls
-          res.json({
-            resultCode: 0,
-            clientId,
-            login: username,
-            token
-          });
-        })
-        .catch(err => console.log(err));
+    if (login && password) {
+      let results = await this.query(SELECT_ALL_USERS);
+      let User = results.find(
+        user => user.User_Login === login && user.User_Password === password
+      );
+      if (User) {
+        let userRole = User.User_Role;
+        /* let contract = await this.query(SELECT_USER_CONTRACT, [
+          User.User_ClientId
+        ]);
+        let clientId = contract[0].Contract_ClientId;*/
+        let clientId;
+
+        if (User.User_ClientId) {
+          let contract = await this.query(SELECT_USER_CONTRACT, [
+            User.User_ClientId
+          ]);
+
+          clientId = contract ? contract[0].Contract_ClientId : null;
+        }
+
+        let token = jwt.sign({ clientId, login, userRole }, secret, {
+          expiresIn: "24h"
+        });
+        // return the JWT token for the future API calls
+        await res.json({
+          resultCode: 0,
+          clientId,
+          login,
+          token,
+          userRole
+        });
+      } else {
+        /*res.status(403).send({
+                success: false,
+                message: "Incorrect username or password"
+              });*/
+        res.send({
+          success: false,
+          message: "Incorrect username or password"
+        });
+        throw new Error("Incorrect username or password");
+      }
     } else {
       res.status(400).send({
         success: false,
@@ -73,55 +88,78 @@ class HandlerGenerator {
     }
   };
 
-  getServices = (req, res) => {
-    this.query(SELECT_ALL_SERVICES_QUERY).then(results =>
-      res.json({
-        data: results
-      })
+  getServices = async (req, res) => {
+    let results = await this.query(SELECT_ALL_SERVICES_QUERY);
+    await res.json({
+      data: results
+    });
+  };
+
+  getTariffs = async (req, res) => {
+    let tariffs = await this.query(SELECT_ALL_TARIFFS_QUERY);
+    // tariffs = JSON.parse(JSON.stringify(resultTariffs));
+    let resultUserContract = await this.query(
+      SELECT_USER_CONTRACT,
+      req.decoded.clientId
     );
+    await res.json({
+      data: {
+        resultCode: 0,
+        tariffId: resultUserContract[0].Contract_TariffId,
+        tariffs
+      }
+    });
+    //.catch(err => console.log(err));
   };
 
-  getTariffs = (req, res) => {
-    let tariffs;
-    this.query(SELECT_ALL_TARIFFS_QUERY)
-      .then(resultTariffs => {
-        tariffs = JSON.parse(JSON.stringify(resultTariffs));
-        return this.query(SELECT_USER_CONTRACT, req.decoded.clientId);
-      })
-      .then(resultUserContract =>
-        res.json({
-          data: {
-            resultCode: 0,
-            tariffId: resultUserContract[0].Contract_TariffId,
-            tariffs
-          }
-        })
-      )
-      .catch(err => console.log(err));
-  };
-
-  changeTariff = (req, res) => {
+  changeTariff = async (req, res) => {
     let tariffId = req.body.tariffId;
 
-    this.query(SELECT_USER_CONTRACT, req.decoded.clientId).then(results => {
-      if (results[0].Contract_TariffId === tariffId)
-        this.query(UPDATE_USER_CONTRACT, [null, req.decoded.clientId]).then(
-          () =>
-            res.json({
-              data: {
-                resultCode: 0
-              }
-            })
-        );
-      else if (results[0].Contract_TariffId === null)
-        this.query(UPDATE_USER_CONTRACT, [tariffId, req.decoded.clientId]).then(
-          () =>
-            res.json({
-              data: {
-                resultCode: 0
-              }
-            })
-        );
+    let results = await this.query(SELECT_USER_CONTRACT, req.decoded.clientId);
+    if (results[0].Contract_TariffId === tariffId)
+      this.query(UPDATE_USER_CONTRACT, [null, req.decoded.clientId]).then(() =>
+        res.json({
+          data: {
+            resultCode: 0
+          }
+        })
+      );
+    else if (results[0].Contract_TariffId === null)
+      this.query(UPDATE_USER_CONTRACT, [tariffId, req.decoded.clientId]).then(
+        () =>
+          res.json({
+            data: {
+              resultCode: 0
+            }
+          })
+      );
+  };
+
+  getTariffsStat = async (req, res) => {
+    if (req.decoded.userRole !== "admin")
+      await res.json({
+        resultCode: 1
+      });
+    let tariffs = await this.query(SELECT_TARIFFS_STAT);
+    await res.json({
+      data: {
+        resultCode: 0,
+        tariffs
+      }
+    });
+  };
+
+  getStaff = async (req, res) => {
+    if (req.decoded.userRole !== "admin")
+      await res.json({
+        resultCode: 1
+      });
+    let staff = await this.query(SELECT_STAFF);
+    await res.json({
+      data: {
+        resultCode: 0,
+        staff
+      }
     });
   };
 
@@ -129,7 +167,7 @@ class HandlerGenerator {
     return new Promise((resolve, reject) => {
       this.connection.query(sql, args, (err, rows) => {
         if (err) return reject(err);
-        resolve(rows);
+        resolve(JSON.parse(JSON.stringify(rows)));
       });
     });
   };
@@ -153,6 +191,9 @@ function main() {
     .route("/tariffs")
     .get(handlers.getTariffs)
     .put(handlers.changeTariff);
+
+  app.get("/tariffsstat", checkToken, handlers.getTariffsStat);
+  app.get("/staff", checkToken, handlers.getStaff);
   app.listen(port, () => {
     console.log("Example app on port 1337!");
   });

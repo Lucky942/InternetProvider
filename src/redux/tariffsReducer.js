@@ -1,5 +1,5 @@
 import produce from "immer";
-import { changeTariffStatusApi, getTariffsAPI, loginAPI } from "../api/api";
+import {changeTariffStatusApi, getTariffsAPI, getTariffsStatAPI, loginAPI} from "../api/api";
 
 const SET_TARIFFS = "SET_TARIFFS",
   CHANGE_TARIFF_STATUS = "CHANGE_TARIFF_STATUS";
@@ -35,10 +35,22 @@ const tariffsReducer = (state = initialState, action) =>
     }
   });
 
-export const setTariffStatus = tariffId => ({
+const setTariffStatus = tariffId => ({
   type: CHANGE_TARIFF_STATUS,
   tariffId
 });
+
+const setTariffs = (tariffs, tariffId) => ({
+  type: SET_TARIFFS,
+  tariffs,
+  tariffId
+});
+
+const setTariffsStat = (tariffs) => ({
+  type: SET_TARIFFS,
+  tariffs
+});
+
 
 export const changeTariffStatus = tariffId => dispatch => {
   changeTariffStatusApi(tariffId).then(response => {
@@ -46,18 +58,20 @@ export const changeTariffStatus = tariffId => dispatch => {
   });
 };
 
-export const setTariffs = (tariffs, tariffId) => ({
-  type: SET_TARIFFS,
-  tariffs,
-  tariffId
-});
-
-export const requestTariffs = () => async dispatch => {
-  let response = await getTariffsAPI();
+export const requestTariffs = () => dispatch => {
+  getTariffsAPI().then(response => {
     if (response.resultCode === 0) {
       let { tariffs, tariffId } = response;
       dispatch(setTariffs(tariffs, tariffId));
     }
+};
+
+export const getTariffsStat = () => async dispatch => {
+  let response = await getTariffsStatAPI();
+  if (response.resultCode === 0) {
+    let {tariffs} = response;
+    dispatch(setTariffsStat(tariffs));
+  }
 };
 
 export default tariffsReducer;

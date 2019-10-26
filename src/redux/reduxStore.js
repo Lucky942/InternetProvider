@@ -5,18 +5,19 @@ import { reducer as formReducer } from "redux-form";
 import authReducer from "./authReducer";
 import thunk from "redux-thunk";
 import appReducer from "./appReducer";
+import staffReducer from "./staffReducer";
 
 let reducers = combineReducers({
   tariffsReducer,
   servicesReducer,
   app: appReducer,
   auth: authReducer,
+  staff: staffReducer,
   form: formReducer
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
-
 //let store = createStore(reducers, applyMiddleware(thunk));
 
 export default store;

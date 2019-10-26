@@ -7,6 +7,7 @@ delete from Mounter;
 delete from Contract;
 delete from Tariff;
 delete from Client;
+delete from Users;
 
 alter table Client auto_increment=1;
 alter table Mounter auto_increment=1;

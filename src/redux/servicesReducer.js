@@ -16,7 +16,7 @@ const servicesReducer = (state = initialState, action) =>
     }
   });
 
-export const setServices = services => ({ type: SET_SERVICES, services });
+const setServices = services => ({ type: SET_SERVICES, services });
 
 export const requestServices = () => async dispatch => {
   let response = await getServicesAPI();

@@ -3,8 +3,11 @@
     <words>
       <w>axios</w>
       <w>classnames</w>
+      <w>equipmentstat</w>
       <w>internetprovider</w>
       <w>signup</w>
+      <w>tariffsstat</w>
+      <w>tariffstat</w>
     </words>
   </dictionary>
 </component>

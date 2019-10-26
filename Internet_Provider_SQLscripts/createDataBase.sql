@@ -91,6 +91,7 @@ User_Id int primary key auto_increment,
 User_Login varchar(255) not null unique,
 User_Password varchar(255) not null,
 User_ClientId int,
+User_Role varchar(255) not null,
 
 constraint FK_UserToClient foreign key(User_ClientId) references Client(Client_Id)
 );

@@ -57,7 +57,7 @@ const Login = props => {
   };
 
   return (
-    (props.isAuth && <Redirect to={"/tariffs"} />) || (
+    (props.isAuth && props.userRole==="client" && <Redirect to={"/tariffs"} />) || (
       <div >
         <LoginReduxForm onSubmit={onSubmit} />
       </div>

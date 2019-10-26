@@ -75,14 +75,14 @@ values
 (5, 2, 2),
 (5, 2, 2);
 
-insert into Users(User_Login, User_Password, User_ClientId)
+insert into Users(User_Login, User_Password, User_ClientId, User_Role)
 values
-('admin', '123', null),
-('vadya', '123', 1),
-('kirill', '123', 2),
-('cerk', '123', 3),
-('perk', '123', 4),
-('ek', '123', 5);
+('admin', '123', null, "admin"),
+('vadya', '123', null, "operator"),
+('kirill', '123', 2, "client"),
+('cerk', '123', 3, "client"),
+('perk', '123', 4, "client"),
+('ek', '123', 5, "client");
 
 
 
