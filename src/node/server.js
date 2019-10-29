@@ -17,6 +17,8 @@ const SELECT_TARIFFS_STAT =
 // mounters
 const SELECT_STAFF =
   "SELECT Mounter_Id, Mounter_FirstName, Mounter_LastName, Mounter_Passport, Mounter_Birthday, Mounter_EmploymentDate from Mounter";
+const UPDATE_TARIFF_INFO = "UPDATE Tariff SET Tariff_Name = ?, Tariff_MaxSpeed = ?, Tariff_Price = ? WHERE Tariff_Id = ?";
+const DELETE_TARIFF = "DELETE FROM Tariff WHERE Tariff_Id = ?";
 
 class HandlerGenerator {
   constructor(props) {
@@ -112,7 +114,7 @@ class HandlerGenerator {
     //.catch(err => console.log(err));
   };
 
-  changeTariff = async (req, res) => {
+  changeTariffStatus = async (req, res) => {
     let tariffId = req.body.tariffId;
 
     let results = await this.query(SELECT_USER_CONTRACT, req.decoded.clientId);
@@ -163,6 +165,51 @@ class HandlerGenerator {
     });
   };
 
+  getAllTariffs = async (req, res) => {
+    if (req.decoded.userRole !== "admin")
+      await res.json({
+        resultCode: 1
+      });
+
+    let tariffs = await this.query(SELECT_ALL_TARIFFS_QUERY);
+    await res.json({
+      data: {
+        resultCode: 0,
+        tariffs
+      }
+    });
+  };
+
+  changeTariffInfo = async (req, res) => {
+    if (req.decoded.userRole !== "admin")
+      await res.json({
+        resultCode: 1
+      });
+
+    let {tariffId, tariffName,tariffSpeed,tariffPrice} = req.body;
+
+    await this.query(UPDATE_TARIFF_INFO, [tariffName,tariffSpeed,tariffPrice, tariffId]);
+    await res.json({
+      data: {
+        resultCode: 0
+      }
+    });
+  };
+
+  deleteTariff = async (req, res) => {
+    if (req.decoded.userRole !== "admin")
+      await res.json({
+        resultCode: 1
+      });
+
+    await this.query(DELETE_TARIFF, [req.query.tariffId]);
+    await res.json({
+      data: {
+        resultCode: 0
+      }
+    });
+  };
+
   query = (sql, args) => {
     return new Promise((resolve, reject) => {
       this.connection.query(sql, args, (err, rows) => {
@@ -190,10 +237,13 @@ function main() {
   app
     .route("/tariffs")
     .get(handlers.getTariffs)
-    .put(handlers.changeTariff);
+    .put(handlers.changeTariffStatus);
 
   app.get("/tariffsstat", checkToken, handlers.getTariffsStat);
   app.get("/staff", checkToken, handlers.getStaff);
+  app.get("/alltariffs", checkToken, handlers.getAllTariffs);
+  app.put("/changetariffinfo", checkToken, handlers.changeTariffInfo);
+  app.delete("/deletetariff", checkToken, handlers.deleteTariff);
   app.listen(port, () => {
     console.log("Example app on port 1337!");
   });

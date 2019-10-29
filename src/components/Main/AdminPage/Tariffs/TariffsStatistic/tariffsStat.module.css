@@ -1,0 +1,22 @@
+
+
+.container {
+  display: grid;
+  grid-template-areas: "menu tariffs tariffs";
+  /*margin: 10px 0 0 15px;*/
+}
+
+.tariffsMenu {
+  grid-area: menu;
+}
+
+
+.tariffs {
+  grid-area: tariffs;
+}
+
+.tariffs td,
+.tariffs th{
+  margin-right: 10px;
+  padding: 5px 10px;
+}

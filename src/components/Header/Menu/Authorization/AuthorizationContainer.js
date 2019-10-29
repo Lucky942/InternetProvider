@@ -3,7 +3,6 @@ import Authorization from "./Authorization";
 import {logout} from "../../../../redux/authReducer";
 
 let mapStateToProps = (state) => {
-  debugger
   return {
     userName: state.auth.login,
     isAuth: state.auth.isAuth

@@ -42,6 +42,7 @@ Order_Date date not null,
 Order_Price float not null,
 Order_ClientId int not null,
 Order_MounterId int not null,
+Order_Address varchar(255) not null,
 
 constraint FK_OrderToClient foreign key(Order_ClientId) references Client(Client_Id),
 constraint FK_OrderToMounter foreign key(Order_MounterId) references Mounter(Mounter_Id)
@@ -82,7 +83,7 @@ Contract_TerminationDate date,
 Contract_TariffId int,
 
 constraint FK_ContractToClient foreign key(Contract_ClientId) references Client(Client_Id),
-constraint FK_ContractToTariff foreign key(Contract_TariffId) references Tariff(Tariff_Id)
+constraint FK_ContractToTariff foreign key(Contract_TariffId) references Tariff(Tariff_Id) ON DELETE SET NULL
 );
 
 create table Users

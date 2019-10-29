@@ -1,11 +1,16 @@
 <component name="ProjectDictionaryState">
   <dictionary name="vadim">
     <words>
+      <w>alltariffs</w>
       <w>axios</w>
+      <w>changetariffinfo</w>
       <w>classnames</w>
+      <w>deletetariff</w>
+      <w>edittariffs</w>
       <w>equipmentstat</w>
       <w>internetprovider</w>
       <w>signup</w>
+      <w>tariffsmenu</w>
       <w>tariffsstat</w>
       <w>tariffstat</w>
     </words>

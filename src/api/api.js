@@ -7,17 +7,20 @@ const instance = axios.create({
   }
 });*/
 
-axios.interceptors.request.use(function(config) {
+axios.interceptors.request.use(
+  function(config) {
     const token = localStorage.getItem("token");
 
-    if ( token != null ) {
-        config.headers.authorization = `Bearer ${token}`;
+    if (token != null) {
+      config.headers.authorization = `Bearer ${token}`;
     }
 
     return config;
-}, function(err) {
+  },
+  function(err) {
     return Promise.reject(err);
-});
+  }
+);
 
 export const authMe = () => {
   return axios.get("http://localhost:1337/auth/me");
@@ -36,10 +39,9 @@ export const logoutAPI = () => {
 };
 
 export const getTariffsAPI = () => {
-  return axios
-    .get(`http://localhost:1337/tariffs`)
-    .then(response => {
-      return response.data.data});
+  return axios.get(`http://localhost:1337/tariffs`).then(response => {
+    return response.data.data;
+  });
 };
 
 export const getServicesAPI = () => {
@@ -50,16 +52,44 @@ export const getServicesAPI = () => {
 
 export const changeTariffStatusApi = tariffId => {
   return axios
-      .put("http://localhost:1337/tariffs", { tariffId })
-      .then(response => response.data.data);
+    .put("http://localhost:1337/tariffs", { tariffId })
+    .then(response => response.data.data);
 };
 
 export const getTariffsStatAPI = async () => {
-    let response = await axios.get("http://localhost:1337/tariffsstat");
-    return response.data.data;
+  let response = await axios.get("http://localhost:1337/tariffsstat");
+  return response.data.data;
+};
+
+export const getAllTariffsAPI = async () => {
+  let response = await axios.get("http://localhost:1337/alltariffs");
+
+  return response.data.data;
 };
 
 export const getStaffAPI = async () => {
-    let response = await axios.get("http://localhost:1337/staff")
-    return response.data.data;
+  let response = await axios.get("http://localhost:1337/staff");
+  return response.data.data;
+};
+
+export const changeTariffInfoAPI = async (
+  tariffId,
+  tariffName,
+  tariffSpeed,
+  tariffPrice
+) => {
+  let response = await axios.put("http://localhost:1337/changetariffinfo", {
+    tariffId,
+    tariffName,
+    tariffSpeed,
+    tariffPrice
+  });
+  return response.data.data;
+};
+
+export const deleteTariffAPI = async tariffId => {
+  let response = await axios.delete(
+    `http://localhost:1337/deletetariff?tariffId=${tariffId}`
+  );
+  return response.data.data;
 };

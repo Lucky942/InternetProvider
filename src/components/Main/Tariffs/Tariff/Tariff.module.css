@@ -6,6 +6,7 @@
 .btn {
     font: inherit;
     cursor: pointer;
+    position: relative;
 
     /* по-умолчанию для <button>, но пригодится для <a> */
     display: inline-block;
@@ -47,4 +48,13 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.5),
     0 0 0 1.5px rgba(255, 105, 180, 0.5);
+}
+
+.btn.clicked::after{
+    content: "Вы можете подключить не более одного тарифа";
+    position: absolute;
+    left: 0;
+    top: 40px;
+    width: 200px;
+    color: red;
 }

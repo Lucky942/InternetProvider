@@ -41,7 +41,7 @@ const LoginForm = props => {
           <button>Login</button>
         </div>
       </form>
-      <NavLink to="/signup">Зарегистрироваться</NavLink>}
+      <NavLink to="/signup">Зарегистрироваться</NavLink>
     </div>
   );
 };
@@ -57,7 +57,9 @@ const Login = props => {
   };
 
   return (
-    (props.isAuth && props.userRole==="client" && <Redirect to={"/tariffs"} />) || (
+    (props.isAuth && props.userRole==="client" && <Redirect to={"/tariffs"} />) ||
+    (props.isAuth && props.userRole==="admin" && <Redirect to={"/tariffsstat"} />) ||
+    (
       <div >
         <LoginReduxForm onSubmit={onSubmit} />
       </div>

@@ -20,7 +20,7 @@
     padding: 10px 15px;
 }
 
-a:after {
+.menuItem a:after {
     display: block;
     position: absolute;
     left: 0;
@@ -31,7 +31,7 @@ a:after {
     transition: width 0.3s ease-out
 }
 
-a:hover:after,
-a:focus:after {
+.menuItem a:hover:after,
+.menuItem a:focus:after {
     width: 100%; /*устанавливаем значение 100% чтобы ссылка подчёркивалась полностью*/
 }

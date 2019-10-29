@@ -8,7 +8,7 @@ values
 
 insert into Tariff(Tariff_Name, Tariff_MaxSpeed, Tariff_Price)
 values
-('НаДонышке', 10, 300),
+('Слабачок', 10, 300),
 ('Среднячок', 25, 450),
 ('Черненький', 45, 650),
 ('ТурбоБустик', 65, 800),

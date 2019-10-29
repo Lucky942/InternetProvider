@@ -26,7 +26,7 @@ const Tariffs = React.memo(({tariffs, tariffId, changeTariffStatus}) => {
             tariffPrice={elem.Tariff_Price}
             changeTariffStatus={changeTariffStatus}
           />
-        )
+        )*/
       )}
     </div>
   );

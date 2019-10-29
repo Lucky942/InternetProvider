@@ -9,8 +9,8 @@ const AdminMenu = (props) => {
     <div className={classnames(styles.mainMenu, "mainMenu")}>
       <ul className={styles.menuList}>
         <li className={styles.menuItem}>
-          <NavLink to="/tariffsstat" activeClassName={styles.active}>
-            Статистика по тарифам
+          <NavLink to="/tariffsmenu" activeClassName={styles.active}>
+            Тарифы
           </NavLink>
         </li>
         <li className={styles.menuItem}>
