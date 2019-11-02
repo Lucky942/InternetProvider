@@ -10,19 +10,16 @@ const TariffInfo = ({
   changeTariffInfo,
   deleteTariff
 }) => {
-  debugger;
   const [editing, setEditing] = useState(false);
 
   const [tariffName, setName] = useState(name);
   const [tariffMaxSpeed, setMaxSpeed] = useState(maxSpeed);
   const [tariffPrice, setPrice] = useState(price);
 
-  // change TariffInfo in tariffsReducer and on server
   useEffect(() => {
     setName(name);
     setMaxSpeed(maxSpeed);
     setPrice(price);
-    debugger;
   }, [name, maxSpeed, price]);
 
   const onNameChange = event => {
@@ -40,7 +37,7 @@ const TariffInfo = ({
   };
 
   const saveEdits = () => {
-    changeTariffInfo(i - 1, id, tariffName, tariffMaxSpeed, tariffPrice);
+    changeTariffInfo(id, tariffName, tariffMaxSpeed, tariffPrice);
     setEditing(false);
   };
 

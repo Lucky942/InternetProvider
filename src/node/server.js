@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 let jwt = require("jsonwebtoken");
+const { checkRole } = require("./authorization/checkRole");
 let secret = require("./authorization/middleware").config.secret;
 let checkToken = require("./authorization/middleware").checkToken;
 
@@ -17,8 +18,11 @@ const SELECT_TARIFFS_STAT =
 // mounters
 const SELECT_STAFF =
   "SELECT Mounter_Id, Mounter_FirstName, Mounter_LastName, Mounter_Passport, Mounter_Birthday, Mounter_EmploymentDate from Mounter";
-const UPDATE_TARIFF_INFO = "UPDATE Tariff SET Tariff_Name = ?, Tariff_MaxSpeed = ?, Tariff_Price = ? WHERE Tariff_Id = ?";
+const UPDATE_TARIFF_INFO =
+  "UPDATE Tariff SET Tariff_Name = ?, Tariff_MaxSpeed = ?, Tariff_Price = ? WHERE Tariff_Id = ?";
 const DELETE_TARIFF = "DELETE FROM Tariff WHERE Tariff_Id = ?";
+const CREATE_TARIFF =
+  "INSERT INTO Tariff(Tariff_Name, Tariff_MaxSpeed, Tariff_Price) values (?, ?, ?)";
 
 class HandlerGenerator {
   constructor(props) {
@@ -46,10 +50,6 @@ class HandlerGenerator {
       );
       if (User) {
         let userRole = User.User_Role;
-        /* let contract = await this.query(SELECT_USER_CONTRACT, [
-          User.User_ClientId
-        ]);
-        let clientId = contract[0].Contract_ClientId;*/
         let clientId;
 
         if (User.User_ClientId) {
@@ -91,15 +91,17 @@ class HandlerGenerator {
   };
 
   getServices = async (req, res) => {
-    let results = await this.query(SELECT_ALL_SERVICES_QUERY);
+    let services = await this.query(SELECT_ALL_SERVICES_QUERY);
     await res.json({
-      data: results
+      data: {
+        resultCode: 0,
+        services
+      }
     });
   };
 
   getTariffs = async (req, res) => {
     let tariffs = await this.query(SELECT_ALL_TARIFFS_QUERY);
-    // tariffs = JSON.parse(JSON.stringify(resultTariffs));
     let resultUserContract = await this.query(
       SELECT_USER_CONTRACT,
       req.decoded.clientId
@@ -138,10 +140,6 @@ class HandlerGenerator {
   };
 
   getTariffsStat = async (req, res) => {
-    if (req.decoded.userRole !== "admin")
-      await res.json({
-        resultCode: 1
-      });
     let tariffs = await this.query(SELECT_TARIFFS_STAT);
     await res.json({
       data: {
@@ -152,10 +150,6 @@ class HandlerGenerator {
   };
 
   getStaff = async (req, res) => {
-    if (req.decoded.userRole !== "admin")
-      await res.json({
-        resultCode: 1
-      });
     let staff = await this.query(SELECT_STAFF);
     await res.json({
       data: {
@@ -166,11 +160,6 @@ class HandlerGenerator {
   };
 
   getAllTariffs = async (req, res) => {
-    if (req.decoded.userRole !== "admin")
-      await res.json({
-        resultCode: 1
-      });
-
     let tariffs = await this.query(SELECT_ALL_TARIFFS_QUERY);
     await res.json({
       data: {
@@ -181,14 +170,14 @@ class HandlerGenerator {
   };
 
   changeTariffInfo = async (req, res) => {
-    if (req.decoded.userRole !== "admin")
-      await res.json({
-        resultCode: 1
-      });
+    let { tariffId, tariffName, tariffSpeed, tariffPrice } = req.body;
 
-    let {tariffId, tariffName,tariffSpeed,tariffPrice} = req.body;
-
-    await this.query(UPDATE_TARIFF_INFO, [tariffName,tariffSpeed,tariffPrice, tariffId]);
+    await this.query(UPDATE_TARIFF_INFO, [
+      tariffName,
+      tariffSpeed,
+      tariffPrice,
+      tariffId
+    ]);
     await res.json({
       data: {
         resultCode: 0
@@ -196,12 +185,24 @@ class HandlerGenerator {
     });
   };
 
-  deleteTariff = async (req, res) => {
-    if (req.decoded.userRole !== "admin")
-      await res.json({
-        resultCode: 1
-      });
+  createTariff = async (req, res) => {
+    await this.query(CREATE_TARIFF, [
+      req.body.tariffName,
+      req.body.tariffSpeed,
+      req.body.tariffPrice
+    ]);
+    let result = await this.query(
+      "SELECT * FROM Tariff ORDER BY Tariff_Id DESC LIMIT 1"
+    );
+    await res.json({
+      data: {
+        resultCode: 0,
+        tariffId: result[0].Tariff_Id
+      }
+    });
+  };
 
+  deleteTariff = async (req, res) => {
     await this.query(DELETE_TARIFF, [req.query.tariffId]);
     await res.json({
       data: {
@@ -239,11 +240,17 @@ function main() {
     .get(handlers.getTariffs)
     .put(handlers.changeTariffStatus);
 
-  app.get("/tariffsstat", checkToken, handlers.getTariffsStat);
-  app.get("/staff", checkToken, handlers.getStaff);
-  app.get("/alltariffs", checkToken, handlers.getAllTariffs);
-  app.put("/changetariffinfo", checkToken, handlers.changeTariffInfo);
-  app.delete("/deletetariff", checkToken, handlers.deleteTariff);
+  app.get("/tariffsstat", checkToken, checkRole, handlers.getTariffsStat);
+  app.get("/staff", checkToken, checkRole, handlers.getStaff);
+  app.get("/alltariffs", checkToken, checkRole, handlers.getAllTariffs);
+  app.put(
+    "/changetariffinfo",
+    checkToken,
+    checkRole,
+    handlers.changeTariffInfo
+  );
+  app.post("/createtariff", checkToken, checkRole, handlers.createTariff);
+  app.delete("/deletetariff", checkToken, checkRole, handlers.deleteTariff);
   app.listen(port, () => {
     console.log("Example app on port 1337!");
   });

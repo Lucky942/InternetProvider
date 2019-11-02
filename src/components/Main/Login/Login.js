@@ -9,6 +9,7 @@ import Input from "../../Common/FormControls/FormsControls";
 const maxLength10 = maxLengthCreator(10);
 
 const LoginForm = props => {
+  debugger
   return (
     <div className={styles.login}>
       Login
@@ -58,7 +59,7 @@ const Login = props => {
 
   return (
     (props.isAuth && props.userRole==="client" && <Redirect to={"/tariffs"} />) ||
-    (props.isAuth && props.userRole==="admin" && <Redirect to={"/tariffsstat"} />) ||
+    (props.isAuth && props.userRole==="admin" && <Redirect to={"/alltariffs"} />) ||
     (
       <div >
         <LoginReduxForm onSubmit={onSubmit} />

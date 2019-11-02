@@ -1,5 +1,5 @@
 import produce from "immer";
-import { getServicesAPI } from "../api/api";
+import { getAdminServicesAPI, getServicesAPI } from "../api/api";
 
 const SET_SERVICES = "SET_SERVICES";
 
@@ -18,9 +18,20 @@ const servicesReducer = (state = initialState, action) =>
 
 const setServices = services => ({ type: SET_SERVICES, services });
 
-export const requestServices = () => async dispatch => {
+/*export const getAdminServices = () => async (dispatch) => {
+  let response = await getAdminServicesAPI();
+  debugger
+
+};*/
+
+export const getServices = () => async dispatch => {
   let response = await getServicesAPI();
-  dispatch(setServices(response.data));
+  debugger
+  if (response.resultCode === 0) {
+    let { services } = response;
+    debugger
+    dispatch(setServices(services));
+  }
 };
 
 export default servicesReducer;

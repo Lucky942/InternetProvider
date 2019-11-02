@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { requestTariffsStat } from "../../../../../redux/tariffsReducer";
+import { requestTariffsStat } from "../../../../../../redux/tariffsReducer";
 import { connect } from "react-redux";
-import {getTariffsStat} from "../../../../../redux/Selectors/tariffsSelectors";
+import {getTariffsStat} from "../../../../../../redux/Selectors/tariffsSelectors";
 import styles from "./tariffsStat.module.css";
-import withAuthRedirect from "../../../../../hoc/withAuthRedirect";
+import withAuthRedirect from "../../../../../../hoc/withAuthRedirect";
 import { compose } from "redux";
-import TariffsMenu from "../TariffsMenu";
+import TariffsMenu from "../../GoodsMenu";
 
 const TariffsStat = ({ tariffs, getTariffsStat }) => {
   useEffect(() => {

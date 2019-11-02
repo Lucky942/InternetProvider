@@ -19,3 +19,22 @@
   margin-right: 10px;
   padding: 5px 10px;
 }
+
+.addTariff {
+
+}
+
+.links {
+  margin-top: 10px;
+}
+
+.tariffsStat {
+  color: #3d7e9a;
+  text-decoration: none;
+}
+
+.tariffsStat:hover {
+  text-decoration: underline;
+}
+
+

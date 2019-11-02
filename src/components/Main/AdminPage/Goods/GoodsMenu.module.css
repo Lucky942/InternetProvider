@@ -2,19 +2,21 @@
 
 }
 .tariffsMenu {
+    margin-left: 20px;
     padding: 0;
     width: 250px;/*
     margin: 10px 0 0 15px;*/
+    background-color: #fcfcfc;
 }
 
 .tariffsMenu li{
-    border-bottom: 1px solid black;
     list-style-type: none;
-    padding-top: 10px;
+    margin-top: 5px;
     /*margin-top: 10px;*/
 }
 
 .tariffsMenu a {
     text-decoration: none;
-    color: black;
+    color: #3d7e9a
 }
+

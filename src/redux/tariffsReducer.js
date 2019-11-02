@@ -1,11 +1,12 @@
 import produce from "immer";
 import {
   changeTariffInfoAPI,
-  changeTariffStatusApi, deleteTariffAPI,
+  changeTariffStatusApi,
+  createTariffAPI,
+  deleteTariffAPI,
   getAllTariffsAPI,
   getTariffsAPI,
-  getTariffsStatAPI,
-  loginAPI
+  getTariffsStatAPI
 } from "../api/api";
 
 const SET_TARIFFS = "SET_TARIFFS",
@@ -13,7 +14,8 @@ const SET_TARIFFS = "SET_TARIFFS",
   SET_TARIFFS_STAT = "SET_TARIFFS_STAT",
   SET_ALL_TARIFFS = "SET_ALL_TARIFFS",
   CHANGE_TARIFF_INFO = "CHANGE_TARIFF_INFO",
-  DELETE_TARIFF = "DELETE_TARIFF";
+  DELETE_TARIFF = "DELETE_TARIFF",
+  CREATE_TARIFF = "CREATE_TARIFF";
 
 let initialState = {
   tariffs: [],
@@ -21,16 +23,7 @@ let initialState = {
   allTariffs: []
 };
 
-// const tariffsReducer = (state = initialState, action) => {
-//   switch (action.type) {
-//     case SET_TARIFFS:
-//       let stateCopy = { ...state };
-//       stateCopy.tariffs = action.tariffs;
-//       return stateCopy;
-//     default:
-//       return state;
-//   }
-// };
+let index;
 
 const tariffsReducer = (state = initialState, action) =>
   produce(state, draft => {
@@ -52,18 +45,31 @@ const tariffsReducer = (state = initialState, action) =>
         draft.allTariffs = action.allTariffs;
         break;
       case CHANGE_TARIFF_INFO:
-        draft.allTariffs[action.i].Tariff_Name = action.tariffName;
-        draft.allTariffs[action.i].Tariff_MaxSpeed =
-          action.tariffSpeed;
-        draft.allTariffs[action.i].Tariff_Price = action.tariffPrice;
+        index = draft.allTariffs.findIndex(
+            elem => elem.Tariff_Id === action.tariffId
+        );
+        draft.allTariffs[index].Tariff_Name = action.tariffName;
+        draft.allTariffs[index].Tariff_MaxSpeed = action.tariffSpeed;
+        draft.allTariffs[index].Tariff_Price = action.tariffPrice;
+        break;
+      case CREATE_TARIFF:
+        draft.allTariffs.push({
+          Tariff_Id: action.tariffId,
+          Tariff_Name: action.tariffName,
+          Tariff_MaxSpeed: action.tariffSpeed,
+          Tariff_Price: action.tariffPrice
+        });
         break;
       case DELETE_TARIFF:
-        draft.allTariffs.splice(action.tariffId - 1, 1);
+        index = draft.allTariffs.findIndex(
+          elem => elem.Tariff_Id === action.tariffId
+        );
+        draft.allTariffs.splice(index, 1);
         break;
       case CHANGE_TARIFF_STATUS:
         /*if (draft.tariffId === action.tariffId) draft.tariffId = null;
         else if (!draft.tariffId) draft.tariffId = action.tariffId;*/
-        let index = draft.tariffs.findIndex(elem => elem.connected);
+        index = draft.tariffs.findIndex(elem => elem.connected);
         if (index === -1) {
           draft.tariffs[action.tariffId - 1].connected = true;
           draft.tariffId = action.tariffId;
@@ -71,7 +77,6 @@ const tariffsReducer = (state = initialState, action) =>
           draft.tariffs[action.tariffId - 1].connected = false;
           draft.tariffId = null;
         }
-
         break;
     }
   });
@@ -97,14 +102,17 @@ const setAllTariffs = allTariffs => ({
   allTariffs
 });
 
-const changeTariffInfoAC = (
-  i,
+const changeTariffInfoAC = (tariffId, tariffName, tariffSpeed, tariffPrice) => ({
+  type: CHANGE_TARIFF_INFO,
+  tariffId,
   tariffName,
   tariffSpeed,
   tariffPrice
-) => ({
-  type: CHANGE_TARIFF_INFO,
-  i,
+});
+
+const createTariffAC = (tariffId, tariffName, tariffSpeed, tariffPrice) => ({
+  type: CREATE_TARIFF,
+  tariffId,
   tariffName,
   tariffSpeed,
   tariffPrice
@@ -153,7 +161,6 @@ export const requestTariffsStat = () => async dispatch => {
 };
 
 export const changeTariffInfo = (
-    i,
   tariffId,
   tariffName,
   tariffSpeed,
@@ -167,14 +174,24 @@ export const changeTariffInfo = (
   );
   if (response.resultCode === 0) {
     //let { tariffs } = response;
-    dispatch(
-      changeTariffInfoAC(i, tariffName, tariffSpeed, tariffPrice)
-    );
+    dispatch(changeTariffInfoAC(tariffId, tariffName, tariffSpeed, tariffPrice));
   }
 };
 
+export const createTariff = (
+  tariffName,
+  tariffSpeed,
+  tariffPrice
+) => async dispatch => {
+  debugger;
+  let response = await createTariffAPI(tariffName, tariffSpeed, tariffPrice);
+  if (response.resultCode === 0)
+  dispatch(
+    createTariffAC(response.tariffId, tariffName, tariffSpeed, tariffPrice)
+  );
+};
+
 export const deleteTariff = tariffId => async dispatch => {
-  debugger
   let response = await deleteTariffAPI(tariffId);
   if (response.resultCode === 0) dispatch(deleteTariffAC(tariffId));
 };

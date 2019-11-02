@@ -10,7 +10,7 @@ const AdminMenu = (props) => {
       <ul className={styles.menuList}>
         <li className={styles.menuItem}>
           <NavLink to="/tariffsmenu" activeClassName={styles.active}>
-            Тарифы
+            Товары
           </NavLink>
         </li>
         <li className={styles.menuItem}>

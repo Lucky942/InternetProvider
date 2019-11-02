@@ -47,7 +47,7 @@ export const getTariffsAPI = () => {
 export const getServicesAPI = () => {
   return axios
     .get("http://localhost:1337/services")
-    .then(response => response.data);
+    .then(response => response.data.data);
 };
 
 export const changeTariffStatusApi = tariffId => {
@@ -87,9 +87,22 @@ export const changeTariffInfoAPI = async (
   return response.data.data;
 };
 
+export const createTariffAPI = async (tariffName, tariffSpeed, tariffPrice) => {
+  let response = await axios.post(
+      `http://localhost:1337/createtariff`, {tariffName, tariffSpeed, tariffPrice}
+  );
+  return response.data.data;
+};
+
 export const deleteTariffAPI = async tariffId => {
   let response = await axios.delete(
     `http://localhost:1337/deletetariff?tariffId=${tariffId}`
   );
+  return response.data.data;
+};
+
+
+export const getAdminServicesAPI = async () => {
+  let response = await axios.get("http://localhost:1337/services");
   return response.data.data;
 };

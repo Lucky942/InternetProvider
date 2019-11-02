@@ -4,10 +4,11 @@ import TariffsContainer from "./Tariffs/TariffsContainer";
 import ServicesContainer from "./Services/ServicesContainer";
 import LoginContainer from "./Login/LoginContainer";
 import SignUpContainer from "./Registration/SignUpContainer";
-import TariffsStat from "./AdminPage/Tariffs/TariffsStatistic/tariffsStat";
+import TariffsStat from "./AdminPage/Goods/Tariffs/TariffsStatistic/tariffsStat";
 import Staff from "./AdminPage/Staff/Staff";
-import TariffsMenu from "./AdminPage/Tariffs/TariffsMenu";
-import AllTariffs from "./AdminPage/Tariffs/AllTariffs/AllTariffs";
+import TariffsMenu from "./AdminPage/Goods/GoodsMenu";
+import AllTariffs from "./AdminPage/Goods/Tariffs/AllTariffs/AllTariffs";
+import Services from "./AdminPage/Goods/Services/Services";
 
 function Main() {
   return (
@@ -22,6 +23,7 @@ function Main() {
             <Route exact path="/tariffsmenu" render={() => <TariffsMenu/>}/>
             <Route exact path="/tariffsstat" render={() => <TariffsStat/>}/>
             <Route exact path="/alltariffs" render={() => <AllTariffs/>}/>
+            <Route exact path="/allservices" render={() => <Services/>}/>
             <Route exact path="/staff" render={() => <Staff/>}/>
         </Switch>
 

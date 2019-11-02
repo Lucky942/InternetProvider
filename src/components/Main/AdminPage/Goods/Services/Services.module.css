@@ -1,0 +1,14 @@
+.container {
+    display: grid;
+    grid-template-areas: "menu services services";
+    /*margin: 10px 0 0 15px;*/
+}
+
+.tariffsMenu {
+    grid-area: menu;
+}
+
+
+.services {
+    grid-area: services;
+}
