@@ -20,6 +20,7 @@ let checkToken = (req, res, next) => {
                 });
             } else {
                 req.decoded = decoded;
+                //res.locals.userRole = decoded.userRole;
                 next();
             }
         });

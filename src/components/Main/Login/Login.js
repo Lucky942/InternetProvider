@@ -1,15 +1,18 @@
 import React from "react";
 import styles from "./Login.module.css";
-import formStyle from "../../../components/Common/FormControls/FormsControls.module.css"
+import formStyle from "../../../components/Common/FormControls/FormsControls.module.css";
 import { Field, reduxForm } from "redux-form";
-import { required, maxLengthCreator } from "../../../utils/validators/validators.js";
+import {
+  required,
+  maxLengthCreator
+} from "../../../utils/validators/validators.js";
 import { NavLink, Redirect } from "react-router-dom";
 import Input from "../../Common/FormControls/FormsControls";
 
 const maxLength10 = maxLengthCreator(10);
 
 const LoginForm = props => {
-  debugger
+  debugger;
   return (
     <div className={styles.login}>
       Login
@@ -35,9 +38,9 @@ const LoginForm = props => {
           <Field component={Input} name={"rememberMe"} type={"checkbox"} />{" "}
           Remember me
         </div>
-        {props.error && <div className={formStyle.formSummaryError}>
-          {props.error}
-        </div>}
+        {props.error && (
+          <div className={formStyle.formSummaryError}>{props.error}</div>
+        )}
         <div>
           <button>Login</button>
         </div>
@@ -58,10 +61,16 @@ const Login = props => {
   };
 
   return (
-    (props.isAuth && props.userRole==="client" && <Redirect to={"/tariffs"} />) ||
-    (props.isAuth && props.userRole==="admin" && <Redirect to={"/alltariffs"} />) ||
-    (
-      <div >
+    (props.isAuth && props.userRole === "client" && (
+      <Redirect to={"/tariffs"} />
+    )) ||
+    (props.isAuth && props.userRole === "admin" && (
+      <Redirect to={"/alltariffs"} />
+    )) ||
+    (props.isAuth && props.userRole === "mounter" && (
+      <Redirect to={"/requests"} />
+    )) || (
+      <div>
         <LoginReduxForm onSubmit={onSubmit} />
       </div>
     )

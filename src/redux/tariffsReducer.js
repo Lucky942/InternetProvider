@@ -29,7 +29,6 @@ const tariffsReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case SET_TARIFFS:
-        debugger;
         draft.tariffs = action.tariffs;
         draft.tariffId = action.tariffId;
 
@@ -71,10 +70,15 @@ const tariffsReducer = (state = initialState, action) =>
         else if (!draft.tariffId) draft.tariffId = action.tariffId;*/
         index = draft.tariffs.findIndex(elem => elem.connected);
         if (index === -1) {
-          draft.tariffs[action.tariffId - 1].connected = true;
+          draft.tariffs[draft.tariffs.findIndex(elem => elem.Tariff_Id === action.tariffId)].connected = true;
+          //draft.tariffs[action.tariffId - 1].connected = true;
           draft.tariffId = action.tariffId;
-        } else if (index === action.tariffId - 1) {
+        } /*else if (index === action.tariffId - 1) {
           draft.tariffs[action.tariffId - 1].connected = false;
+          draft.tariffId = null;
+        }*/
+        else {
+          draft.tariffs[draft.tariffs.findIndex(elem => elem.Tariff_Id === action.tariffId)].connected = false;
           draft.tariffId = null;
         }
         break;
@@ -124,6 +128,11 @@ const deleteTariffAC = tariffId => ({
 });
 
 export const changeTariffStatus = tariffId => async dispatch => {
+  debugger
+/*  if(
+      !initialState.tariffs.tariffId ||
+  )*/
+// if (est yzhe est tarif and tariff != dispatch(tariff))
   if (
     !(
       initialState.tariffs.tariffId &&

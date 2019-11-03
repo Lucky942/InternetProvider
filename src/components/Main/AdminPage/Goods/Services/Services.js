@@ -6,10 +6,10 @@ import {
 } from "../../../../../redux/servicesReducer";
 import { compose } from "redux";
 import withAuthRedirect from "../../../../../hoc/withAuthRedirect";
-import routeProtecter from "../../../../../hoc/routeProtecter";
 import styles from "./Services.module.css";
 import TariffsMenu from "../GoodsMenu";
 import ServiceInfo from "./ServiceInfo/ServiceInfo";
+import {adminRouteProtecter} from "../../../../../hoc/routeProtecter";
 
 const Services = ({ services, getServices }) => {
   debugger;
@@ -58,6 +58,6 @@ export default compose(
     mapStateToProps,
     { getServices }
   ),
-  routeProtecter,
+  adminRouteProtecter,
   withAuthRedirect
 )(Services);

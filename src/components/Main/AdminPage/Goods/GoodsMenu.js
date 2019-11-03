@@ -3,7 +3,7 @@ import styles from "./GoodsMenu.module.css";
 import { NavLink } from "react-router-dom";
 import withAuthRedirect from "../../../../hoc/withAuthRedirect";
 import { compose } from "redux";
-import routeProtecter from "../../../../hoc/routeProtecter";
+import {adminRouteProtecter} from "../../../../hoc/routeProtecter";
 
 const GoodsMenu = () => {
   return (
@@ -24,6 +24,6 @@ const GoodsMenu = () => {
 };
 
 export default compose(
-  routeProtecter,
+  adminRouteProtecter,
   withAuthRedirect
 )(GoodsMenu);

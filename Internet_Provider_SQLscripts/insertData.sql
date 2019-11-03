@@ -78,7 +78,7 @@ values
 insert into Users(User_Login, User_Password, User_ClientId, User_Role)
 values
 ('admin', '123', null, "admin"),
-('vadya', '123', null, "operator"),
+('vadya', '123', null, "mounter"),
 ('kirill', '123', 2, "client"),
 ('cerk', '123', 3, "client"),
 ('perk', '123', 4, "client"),

@@ -106,3 +106,15 @@ export const getAdminServicesAPI = async () => {
   let response = await axios.get("http://localhost:1337/services");
   return response.data.data;
 };
+
+// Mounter requests
+
+export const getOrdersOfEquipmentStat = async (year) => {
+  let response = await axios.get(`http://localhost:1337/equipmentstat?year=${year}`);
+  return response.data.data;
+};
+
+export const getMountersYearReport = async (year) => {
+  let response = await axios.get(`http://localhost:1337/mountersworkreport?year=${year}`);
+  return response.data.data;
+};

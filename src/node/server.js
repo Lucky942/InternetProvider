@@ -1,7 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 let jwt = require("jsonwebtoken");
-const { checkRole } = require("./authorization/checkRole");
+const {
+  checkAdminRole,
+  checkMounterRole
+} = require("./authorization/checkRole");
 let secret = require("./authorization/middleware").config.secret;
 let checkToken = require("./authorization/middleware").checkToken;
 
@@ -23,12 +26,24 @@ const UPDATE_TARIFF_INFO =
 const DELETE_TARIFF = "DELETE FROM Tariff WHERE Tariff_Id = ?";
 const CREATE_TARIFF =
   "INSERT INTO Tariff(Tariff_Name, Tariff_MaxSpeed, Tariff_Price) values (?, ?, ?)";
+const ORDERS_OF_EQUIPMENT =
+  "SELECT Equipment_Id as Id,Equipment_Name as Name,sum(Equipment_Amount) as Quantity, sum(Equipment_Amount) * Equipment_Price as Price FROM EquipmentInOrders\n" +
+  "Join Equipment using(Equipment_Id)  \n" +
+  "Join ServiceOrder using(Order_Id) where year(Order_Date)=?\n" +
+  "Group by Equipment_Id";
+const MOUNTERS_YEAR_REPORT =
+  "SELECT Mounter_Id as Id, Mounter_FirstName as FirstName, Mounter_LastName as LastName, Count(*) as Quantity,sum(Order_Price) as TotalCost\n" +
+  "FROM ServiceOrder\n" +
+  "JOIN Mounter ON Mounter.Mounter_Id = ServiceOrder.Order_MounterId\n" +
+  "where year(Order_Date)= ?\n" +
+  "Group By Mounter_Id";
 
 class HandlerGenerator {
   constructor(props) {
     this.connection = require("./db/dbconnect");
   }
 
+  //USER
   authMe = (req, res) => {
     let { clientId, login, userRole } = req.decoded;
     res.json({
@@ -90,6 +105,8 @@ class HandlerGenerator {
     }
   };
 
+  //CLIENT
+
   getServices = async (req, res) => {
     let services = await this.query(SELECT_ALL_SERVICES_QUERY);
     await res.json({
@@ -115,6 +132,8 @@ class HandlerGenerator {
     });
     //.catch(err => console.log(err));
   };
+
+  // ADMIN
 
   changeTariffStatus = async (req, res) => {
     let tariffId = req.body.tariffId;
@@ -211,6 +230,30 @@ class HandlerGenerator {
     });
   };
 
+  //MOUNTER
+
+  getEquipmentStat = async (req, res) => {
+    let equipmentStat = await this.query(ORDERS_OF_EQUIPMENT, [req.query.year]);
+    await res.json({
+      data: {
+        resultCode: 0,
+        equipmentStat
+      }
+    });
+  };
+
+  getMountersReport = async (req, res) => {
+    let mountersWorkReport = await this.query(MOUNTERS_YEAR_REPORT, [
+      req.query.year
+    ]);
+    await res.json({
+      data: {
+        resultCode: 0,
+        mountersWorkReport
+      }
+    });
+  };
+
   query = (sql, args) => {
     return new Promise((resolve, reject) => {
       this.connection.query(sql, args, (err, rows) => {
@@ -239,18 +282,39 @@ function main() {
     .route("/tariffs")
     .get(handlers.getTariffs)
     .put(handlers.changeTariffStatus);
-
-  app.get("/tariffsstat", checkToken, checkRole, handlers.getTariffsStat);
-  app.get("/staff", checkToken, checkRole, handlers.getStaff);
-  app.get("/alltariffs", checkToken, checkRole, handlers.getAllTariffs);
+  //Admin routes
+  app.get("/tariffsstat", checkToken, checkAdminRole, handlers.getTariffsStat);
+  app.get("/staff", checkToken, checkAdminRole, handlers.getStaff);
+  app.get("/alltariffs", checkToken, checkAdminRole, handlers.getAllTariffs);
   app.put(
     "/changetariffinfo",
     checkToken,
-    checkRole,
+    checkAdminRole,
     handlers.changeTariffInfo
   );
-  app.post("/createtariff", checkToken, checkRole, handlers.createTariff);
-  app.delete("/deletetariff", checkToken, checkRole, handlers.deleteTariff);
+  app.post("/createtariff", checkToken, checkAdminRole, handlers.createTariff);
+  app.delete(
+    "/deletetariff",
+    checkToken,
+    checkAdminRole,
+    handlers.deleteTariff
+  );
+
+  //Mounter routes
+  app.get(
+    "/equipmentstat",
+    checkToken,
+    checkMounterRole,
+    handlers.getEquipmentStat
+  );
+
+  app.get(
+    "/mountersworkreport",
+    checkToken,
+    checkMounterRole,
+    handlers.getMountersReport
+  );
+
   app.listen(port, () => {
     console.log("Example app on port 1337!");
   });

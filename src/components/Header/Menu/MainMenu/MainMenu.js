@@ -3,10 +3,11 @@ import "../Menu.css";
 import {connect} from "react-redux";
 import ClientMenu from "./ClientMenu/ClientMenu";
 import AdminMenu from "./AdminMenu/AdminMenu";
+import MounterMenu from "./MounterMenu/MounterMenu";
 
 const MainMenu = ({userRole}) => {
   return (
-      ((userRole === "admin" && <AdminMenu/>) || <ClientMenu />)
+      ((userRole === "admin" && <AdminMenu/>) || (userRole === "mounter" && <MounterMenu/>) || <ClientMenu />)
   );
 };
 

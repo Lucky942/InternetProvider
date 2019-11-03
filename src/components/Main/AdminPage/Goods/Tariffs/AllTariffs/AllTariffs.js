@@ -14,7 +14,7 @@ import styles from "./AllTariffs.module.css";
 import TariffInfo from "./TariffInfo/TariffInfo";
 import TariffForm from "./TariffForm/TariffForm";
 import { NavLink } from "react-router-dom";
-import routeProtecter from "../../../../../../hoc/routeProtecter";
+import {adminRouteProtecter} from "../../../../../../hoc/routeProtecter";
 
 const AllTariffs = ({
   tariffs,
@@ -100,6 +100,6 @@ export default compose(
     mapStateToProps,
     { requestAllTariffs, changeTariffInfo, deleteTariff, createTariff }
   ),
-  routeProtecter,
+  adminRouteProtecter,
   withAuthRedirect
 )(AllTariffs);

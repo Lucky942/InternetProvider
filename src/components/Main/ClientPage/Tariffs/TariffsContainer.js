@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Tariffs from "./Tariffs";
-import { changeTariffStatus, requestTariffs } from "../../../redux/tariffsReducer";
-import withAuthRedirect from "../../../hoc/withAuthRedirect";
+import { changeTariffStatus, requestTariffs } from "../../../../redux/tariffsReducer";
+import withAuthRedirect from "../../../../hoc/withAuthRedirect";
 import { compose } from "redux";
-import {getTariffId, getTariffs} from "../../../redux/Selectors/tariffsSelectors";
+import {getTariffId, getTariffs} from "../../../../redux/Selectors/tariffsSelectors";
 
 class TariffsApiComponent extends Component {
   componentDidMount() {

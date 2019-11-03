@@ -50,6 +50,7 @@
     0 0 0 1.5px rgba(255, 105, 180, 0.5);
 }
 
+/*
 .btn.clicked::after{
     content: "Вы можете подключить не более одного тарифа";
     position: absolute;
@@ -57,4 +58,4 @@
     top: 40px;
     width: 200px;
     color: red;
-}
+}*/

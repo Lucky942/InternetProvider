@@ -4,7 +4,7 @@ import styles from "./Staff.module.css"
 import {getStaff} from "../../../../redux/staffReducer";
 import withAuthRedirect from "../../../../hoc/withAuthRedirect";
 import {compose} from "redux";
-import routeProtecter from "../../../../hoc/routeProtecter";
+import {adminRouteProtecter} from "../../../../hoc/routeProtecter";
 
 const  Staff = ({staff, getStaff}) => {
 
@@ -45,7 +45,7 @@ export default compose(
     connect(
         mapStateToProps,
         { getStaff }),
-    routeProtecter,
+    adminRouteProtecter,
     withAuthRedirect
 )(Staff);
 /*export default connect(

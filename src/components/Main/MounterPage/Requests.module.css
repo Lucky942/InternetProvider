@@ -1,0 +1,14 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
+.requests {
+    padding: 0;
+    margin-left: 50px;
+    max-width: 300px;
+}
+
+.listItem {
+    margin-top: 10px;
+}

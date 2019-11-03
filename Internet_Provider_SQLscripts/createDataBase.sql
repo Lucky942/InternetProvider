@@ -60,7 +60,7 @@ create table EquipmentInOrders
 (
 Order_Id int not null,
 Equipment_Id int not null,
-Equipment_Count int not null,
+Equipment_Amount int not null,
 
 constraint FK_Order_Order_Id___EquipmentInOrders_Order_Id foreign key(Order_Id) references ServiceOrder(Order_Id),
 constraint FK_Equipment_Equipment_Id___EquipmentInOrders_Equipment_Id foreign key(Equipment_Id) references Equipment(Equipment_Id)
