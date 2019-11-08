@@ -11,8 +11,13 @@
       <w>deletetariff</w>
       <w>edittariffs</w>
       <w>equipmentstat</w>
+      <w>expensiveordermounterinfo</w>
       <w>internetprovider</w>
+      <w>longesttimemounter</w>
+      <w>longesttimeworker</w>
       <w>mountersworkreport</w>
+      <w>nomonthordersmounterinfo</w>
+      <w>noordersmounter</w>
       <w>protecter</w>
       <w>signup</w>
       <w>sumbit</w>

@@ -10,13 +10,13 @@ const EqTable = ({ year, ordersOfEquipment }) => {
         <table>
           <tr>
             <th>Id</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>TotalCost</th>
+            <th>Название</th>
+            <th>Количество</th>
+            <th>Общая стоимость</th>
           </tr>
 
-          {ordersOfEquipment.map(elem => (
-            <tr>
+          {ordersOfEquipment.map((elem, i) => (
+            <tr key={i}>
               <td>{elem.Id}</td>
               <td>{elem.Name}</td>
               <td>{elem.Quantity}</td>

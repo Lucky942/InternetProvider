@@ -88,9 +88,11 @@ export const changeTariffInfoAPI = async (
 };
 
 export const createTariffAPI = async (tariffName, tariffSpeed, tariffPrice) => {
-  let response = await axios.post(
-      `http://localhost:1337/createtariff`, {tariffName, tariffSpeed, tariffPrice}
-  );
+  let response = await axios.post(`http://localhost:1337/createtariff`, {
+    tariffName,
+    tariffSpeed,
+    tariffPrice
+  });
   return response.data.data;
 };
 
@@ -101,7 +103,6 @@ export const deleteTariffAPI = async tariffId => {
   return response.data.data;
 };
 
-
 export const getAdminServicesAPI = async () => {
   let response = await axios.get("http://localhost:1337/services");
   return response.data.data;
@@ -109,12 +110,40 @@ export const getAdminServicesAPI = async () => {
 
 // Mounter requests
 
-export const getOrdersOfEquipmentStat = async (year) => {
-  let response = await axios.get(`http://localhost:1337/equipmentstat?year=${year}`);
+export const getOrdersOfEquipmentStat = async year => {
+  let response = await axios.get(
+    `http://localhost:1337/equipmentstat?year=${year}`
+  );
   return response.data.data;
 };
 
-export const getMountersYearReport = async (year) => {
-  let response = await axios.get(`http://localhost:1337/mountersworkreport?year=${year}`);
+export const getMountersYearReport = async year => {
+  let response = await axios.get(
+    `http://localhost:1337/mountersworkreport?year=${year}`
+  );
+  return response.data.data;
+};
+
+export const getLongestTimeMounter = async () => {
+  let response = await axios.get("http://localhost:1337/longesttimemounter");
+  return response.data.data;
+};
+
+export const getNoOrdersMounterInfo = async () => {
+  let response = await axios.get("http://localhost:1337/noordersmounter");
+  return response.data.data;
+};
+
+export const getExpensiveOrderMounterInfo = async year => {
+  let response = await axios.get(
+    `http://localhost:1337/expensiveordermounterinfo?year=${year}`
+  );
+  return response.data.data;
+};
+
+export const getNoOrdersMonthMounterInfo = async (year, month) => {
+  let response = await axios.get(
+    `http://localhost:1337/nomonthordersmounterinfo?year=${year}&month=${month}`
+  );
   return response.data.data;
 };

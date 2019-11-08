@@ -1,27 +1,35 @@
-import React from 'react';
+import React from "react";
 
 class DataInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.year = React.createRef();
+    this.month = React.createRef();
+    this.inputType = this.props.inputType;
+  }
 
-    constructor(props){
-        super(props);
-        this.input = React.createRef();
-    }
+  handleClick = async () => {
+    await this.props.getInfo(this.year.current.value, this.month.current.value);
+    this.props.setInputName(this.props.inputName);
+    this.year.current.value = "";
+    this.month.current.value = "";
+  };
 
-    handleClick = async () => {
-        await this.props.getInfo(this.input.current.value);
-        this.props.setInputName(this.props.inputName);
-        this.input.current.value = "";
-    };
-
-    render() {
-        return (
-            <React.Fragment>
-                <input type="text" ref = {this.input}/>
-                <button onClick={this.handleClick}>Показать информацию</button>
-            </React.Fragment>
-        );
-    }
-
+  render() {
+    return (
+      <React.Fragment>
+          <div>Год:
+              <input type="text" ref={this.year}/></div>
+        {this.inputType === "monthAndYear" && (
+          <div>
+            Месяц:
+            <input type="text" ref={this.month} />
+          </div>
+        )}
+        <button onClick={this.handleClick}>Показать информацию</button>
+      </React.Fragment>
+    );
+  }
 }
 
 export default DataInput;

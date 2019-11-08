@@ -26,6 +26,7 @@ const UPDATE_TARIFF_INFO =
 const DELETE_TARIFF = "DELETE FROM Tariff WHERE Tariff_Id = ?";
 const CREATE_TARIFF =
   "INSERT INTO Tariff(Tariff_Name, Tariff_MaxSpeed, Tariff_Price) values (?, ?, ?)";
+// REQUESTS
 const ORDERS_OF_EQUIPMENT =
   "SELECT Equipment_Id as Id,Equipment_Name as Name,sum(Equipment_Amount) as Quantity, sum(Equipment_Amount) * Equipment_Price as Price FROM EquipmentInOrders\n" +
   "Join Equipment using(Equipment_Id)  \n" +
@@ -37,6 +38,26 @@ const MOUNTERS_YEAR_REPORT =
   "JOIN Mounter ON Mounter.Mounter_Id = ServiceOrder.Order_MounterId\n" +
   "where year(Order_Date)= ?\n" +
   "Group By Mounter_Id";
+const LONGEST_TIME_MOUNTER =
+  "SELECT Mounter_Id as Id, Mounter_FirstName as FirstName, Mounter_LastName as LastName, Mounter_Passport as Passport, Mounter_Birthday\n" +
+  "as Birthday, Mounter_EmploymentDate as EmploymentDate FROM Mounter Where Mounter_EmploymentDate = (SELECT MIN(Mounter_EmploymentDate) FROM Mounter)";
+const EXPENSIVE_ORDER_MOUNTER_INFO =
+  "SELECT Mounter_Id as Id,Mounter_FirstName as FirstName,Mounter_LastName as LastName,Mounter_Passport as Passport,Mounter_Birthday as Birthday, Mounter_EmploymentDate as EmploymentDate, Order_Price as Price\n" +
+  " FROM ServiceOrder join Mounter on ServiceOrder.Order_MounterId = Mounter.Mounter_Id\n" +
+  "Where Order_Price = (Select max(Order_Price) from  ServiceOrder where year(Order_Date) = ?)";
+
+const NO_ORDERS_MOUNTER =
+  "SELECT Mounter_Id as Id,Mounter_FirstName as FirstName,Mounter_LastName as LastName,Mounter_Birthday as Birthday,\n" +
+  "Mounter_EmploymentDate as EmploymentDate FROM ServiceOrder \n" +
+  "right join Mounter on ServiceOrder.Order_MounterId = Mounter.Mounter_Id\n" +
+  "Where Order_Id is Null";
+
+const NO_ORDERS_MONTH_MOUNTER =
+  "SELECT Mounter_Id as Id, Mounter_FirstName as FirstName, Mounter_LastName as LastName, Mounter_Passport as Passport ,Mounter_Birthday as Birthday,\n" +
+  "Mounter_EmploymentDate as EmploymentDate\n" +
+  " FROM Mounter left join (Select * From ServiceOrder Where year(Order_Date)=? and month(Order_Date) = ?) ex2017_03\n" +
+  "on ex2017_03.Order_MounterId = Mounter.Mounter_Id\n" +
+  "Where Order_Id Is NULL";
 
 class HandlerGenerator {
   constructor(props) {
@@ -254,6 +275,52 @@ class HandlerGenerator {
     });
   };
 
+  getLongestTimeMounter = async (req, res) => {
+    let longestTimeMounterInfo = await this.query(LONGEST_TIME_MOUNTER);
+    await res.json({
+      data: {
+        resultCode: 0,
+        longestTimeMounterInfo
+      }
+    });
+  };
+
+  getNoOrdersMounterInfo = async (req, res) => {
+    let noOrdersMounterInfo = await this.query(NO_ORDERS_MOUNTER);
+    await res.json({
+      data: {
+        resultCode: 0,
+        noOrdersMounterInfo
+      }
+    });
+  };
+
+  getExpensiveOrderMounterInfo = async (req, res) => {
+    let expensiveOrderMounterInfo = await this.query(
+      EXPENSIVE_ORDER_MOUNTER_INFO,
+      [req.query.year]
+    );
+    await res.json({
+      data: {
+        resultCode: 0,
+        expensiveOrderMounterInfo
+      }
+    });
+  };
+
+  getNoOrdersMonthMounterInfo = async (req, res) => {
+    let noOrdersMonthMounterInfo = await this.query(NO_ORDERS_MONTH_MOUNTER, [
+      req.query.year,
+      req.query.month
+    ]);
+    await res.json({
+      data: {
+        resultCode: 0,
+        noOrdersMonthMounterInfo
+      }
+    });
+  };
+
   query = (sql, args) => {
     return new Promise((resolve, reject) => {
       this.connection.query(sql, args, (err, rows) => {
@@ -313,6 +380,34 @@ function main() {
     checkToken,
     checkMounterRole,
     handlers.getMountersReport
+  );
+
+  app.get(
+    "/longesttimemounter",
+    checkToken,
+    checkMounterRole,
+    handlers.getLongestTimeMounter
+  );
+
+  app.get(
+    "/noordersmounter",
+    checkToken,
+    checkMounterRole,
+    handlers.getNoOrdersMounterInfo
+  );
+
+  app.get(
+    "/expensiveordermounterinfo",
+    checkToken,
+    checkMounterRole,
+    handlers.getExpensiveOrderMounterInfo
+  );
+
+  app.get(
+    "/nomonthordersmounterinfo",
+    checkToken,
+    checkMounterRole,
+    handlers.getNoOrdersMonthMounterInfo
   );
 
   app.listen(port, () => {
