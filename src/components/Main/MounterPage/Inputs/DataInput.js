@@ -9,10 +9,11 @@ class DataInput extends React.Component {
   }
 
   handleClick = async () => {
-    await this.props.getInfo(this.year.current.value, this.month.current.value);
+    let month = this.inputType === "monthAndYear" ? this.month.current.value : null;
+    await this.props.getInfo(this.year.current.value, month);
     this.props.setInputName(this.props.inputName);
     this.year.current.value = "";
-    this.month.current.value = "";
+    if(this.inputType === "monthAndYear") this.month.current.value = "";
   };
 
   render() {
