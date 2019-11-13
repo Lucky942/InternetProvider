@@ -1,6 +1,11 @@
 import produce from "immer";
-import {authMe, loginAPI, logoutAPI} from "../api/api";
-import {stopSubmit} from "redux-form";
+import {
+  authMe,
+  createNewClientAPI,
+  loginAPI,
+  signUpAPI
+} from "../api/api";
+import { stopSubmit } from "redux-form";
 
 const SET_USER_DATA = "SET_USER_DATA";
 
@@ -23,29 +28,58 @@ const authReducer = (state = initialState, action) =>
     }
   });
 
-export const setUserData = (userId, login, userRole, isAuth) => ({
+export const setUserData = (userId = null, login, userRole, isAuth) => ({
   type: SET_USER_DATA,
   payload: { userId, login, userRole, isAuth }
 });
 
+export const createNewClient = (
+  firstName,
+  lastName,
+  passport,
+  birthday
+) => async dispatch => {
+  let response = await createNewClientAPI(
+    firstName,
+    lastName,
+    passport,
+    birthday
+  );
+  if (response.resultCode === 0) {
+    localStorage.setItem("token", response.token);
+    let { clientId, login, userRole } = response;
+    dispatch(setUserData(clientId, login, userRole, true));
+  }
+};
+
 export const getAuthUserData = () => async dispatch => {
   return authMe().then(response => {
     if (response.data.resultCode === 0) {
-      let { clientId, login, userRole} = response.data;
+      let { clientId, login, userRole } = response.data;
       dispatch(setUserData(clientId, login, userRole, true));
     }
   });
 };
 
-export const login = (login, password, rememberMe) => dispatch => {
-  loginAPI(login, password, rememberMe).then(response => {
+export const signUp = (login, password, rememberMe) => async dispatch => {
+  let response = await signUpAPI(login, password, rememberMe);
+  if (response.data.resultCode === 0) {
+    localStorage.setItem("token", response.data.token);
+    let { /*clientId,*/ login, userRole } = response.data;
+    dispatch(setUserData(null, login, userRole, true));
+  } else {
+    dispatch(stopSubmit("signUp", { _error: response.data.message }));
+  }
+};
+
+export const login = (login, password) => dispatch => {
+  loginAPI(login, password).then(response => {
     if (response.data.resultCode === 0) {
       localStorage.setItem("token", response.data.token);
       let { clientId, login, userRole } = response.data;
-      dispatch(setUserData(clientId, login, userRole,  true));
-    }
-    else {
-      dispatch(stopSubmit("login", {_error: response.data.message}));
+      dispatch(setUserData(clientId, login, userRole, true));
+    } else {
+      dispatch(stopSubmit("login", { _error: response.data.message }));
     }
   });
 };

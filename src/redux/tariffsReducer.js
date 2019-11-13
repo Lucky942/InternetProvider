@@ -31,6 +31,7 @@ const tariffsReducer = (state = initialState, action) =>
       case SET_TARIFFS:
         draft.tariffs = action.tariffs;
         draft.tariffId = action.tariffId;
+        draft.tariffId = action.tariffId;
 
         draft.tariffs.forEach((elem, i) => {
           elem.connected = action.tariffId === i + 1;

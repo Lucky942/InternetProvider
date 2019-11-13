@@ -5,6 +5,7 @@ import { changeTariffStatus, requestTariffs } from "../../../../redux/tariffsRed
 import withAuthRedirect from "../../../../hoc/withAuthRedirect";
 import { compose } from "redux";
 import {getTariffId, getTariffs} from "../../../../redux/Selectors/tariffsSelectors";
+import {clientRouteProtecter} from "../../../../hoc/routeProtecter";
 
 class TariffsApiComponent extends Component {
   componentDidMount() {
@@ -14,7 +15,7 @@ class TariffsApiComponent extends Component {
   render() {
     return (
       <Tariffs
-        tariffId={this.props.tariffId}
+        connectedTariffId={this.props.connectedTariffId}
         tariffs={this.props.tariffs}
         changeTariffStatus={this.props.changeTariffStatus}
       />
@@ -26,7 +27,7 @@ class TariffsApiComponent extends Component {
 let mapStateToProps = state => {
   return {
     tariffs: getTariffs(state),
-    tariffId: getTariffId(state)
+    connectedTariffId: getTariffId(state)
   };
 };
 
@@ -35,5 +36,6 @@ export default compose(
         mapStateToProps,
         { getTariffs: requestTariffs, changeTariffStatus }
     ),
+    clientRouteProtecter,
     withAuthRedirect
 )(TariffsApiComponent);

@@ -1,10 +1,10 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
 import { required } from "../../../../../../../utils/validators/validators.js";
-import Input from "../../../../../../Common/FormControls/FormsControls";
 import {onlyNumbers} from "../../../../../../../utils/validators/validators";
 import styles from './TariffForm.module.css';
 import * as classnames from "classnames";
+import {LoginInput} from "../../../../../../Common/FormControls/FormsControls";
 
 let TariffForm = props => {
 
@@ -19,7 +19,7 @@ let TariffForm = props => {
           <div className={styles.block}>
             <Field
                 name={"tariffName"}
-                component={Input}
+                component={LoginInput}
                 label={"tariffName"}
                 validate={[required]}
             />
@@ -28,7 +28,7 @@ let TariffForm = props => {
             <Field
                 label="tariffSpeed"
                 name={"tariffSpeed"}
-                component={Input}
+                component={LoginInput}
                 validate={[required, onlyNumbers]}
             />
           </div>
@@ -36,7 +36,7 @@ let TariffForm = props => {
             <Field
                 label="tariffPrice"
                 name={"tariffPrice"}
-                component={Input}
+                component={LoginInput}
                 validate={[required, onlyNumbers]}
             />
           </div>

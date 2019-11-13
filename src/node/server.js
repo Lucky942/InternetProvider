@@ -59,6 +59,25 @@ const NO_ORDERS_MONTH_MOUNTER =
   "on ex2017_03.Order_MounterId = Mounter.Mounter_Id\n" +
   "Where Order_Id Is NULL";
 
+// createNewUser signUP
+const CREATE_NEW_USER =
+  "INSERT INTO Users (User_Login, User_Password, User_ClientId, User_Role) Values(?,?, null, ?)";
+
+//createNewClient
+const CREATE_NEW_CLIENT =
+  "INSERT Into Client (Client_FirstName, Client_LastName, Client_Passport, Client_Birthday) VALUES(?,?,?,?);";
+const FIND_NEW_CLIENT =
+  "SELECT Client_Id from Client Where Client_Passport = ?";
+const CREATE_NEW_CONTRACT =
+  "insert into Contract(Contract_ClientId, Contract_ConclusionDate, Contract_TerminationDate, Contract_TariffId)\n" +
+  "values\n" +
+  "( ?, ?, null, null)";
+const UPDATE_USER_INFO =
+  "UPDATE Users SET User_ClientId = ?, User_Role = ? Where User_Login = ?";
+
+// getAccountInfo
+const GET_TARIFF_BY_ID = "SELECT Tariff_Name as tariffName, Tariff_MaxSpeed as tariffSpeed, Tariff_Price as tariffPrice FROM Tariff WHERE Tariff_Id = ?";
+
 class HandlerGenerator {
   constructor(props) {
     this.connection = require("./db/dbconnect");
@@ -74,6 +93,81 @@ class HandlerGenerator {
       userRole,
       message: "Authentication successful!"
     });
+  };
+
+  signUp = async (req, res) => {
+    let { login, password } = req.body;
+    let results = await this.query(SELECT_ALL_USERS);
+    let userWithLogin = results.find(user => user.User_Login === login);
+
+    if (userWithLogin) {
+      await res.json({
+        resultCode: 1
+      });
+    } else {
+      let userRole = "guest";
+      await this.connection.query(CREATE_NEW_USER, [login, password, userRole]);
+
+      let token = jwt.sign({ login, userRole }, secret, { expiresIn: "24h" });
+
+      await res.json({
+        resultCode: 0,
+        token,
+        login,
+        userRole
+      });
+    }
+  };
+
+  createNewClient = async (req, res) => {
+    // clientData
+    let { firstName, lastName, passport, birthday } = req.body;
+
+    // create New Client
+
+    await this.query(CREATE_NEW_CLIENT, [
+      firstName,
+      lastName,
+      passport,
+      birthday
+    ]);
+
+    let results = await this.query(FIND_NEW_CLIENT, [passport]);
+    let clientId = results[0].Client_Id;
+
+    // update User
+
+    let userRole = "client",
+      login = req.decoded.login;
+    await this.connection.query(UPDATE_USER_INFO, [clientId, userRole, login]);
+
+    // createNewContract
+
+    let todayDate = new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replace("T", " ");
+    await this.connection.query(CREATE_NEW_CONTRACT, [clientId, todayDate]);
+
+    // return the JWT token for the future API calls
+    let token = jwt.sign({ clientId, login, userRole }, secret, {
+      expiresIn: "24h"
+    });
+
+    await res.json({
+      resultCode: 0,
+      clientId,
+      login,
+      token,
+      userRole
+    });
+
+    //return tariffs
+    /*    let tariffs = await this.query(SELECT_ALL_TARIFFS_QUERY);
+
+    let resultUserContract =  await this.query(SELECT_USER_CONTRACT, newClientId);
+
+    let tariffId = resultUserContract[0].Contract_TariffId;*/
   };
 
   login = async (req, res) => {
@@ -140,14 +234,18 @@ class HandlerGenerator {
 
   getTariffs = async (req, res) => {
     let tariffs = await this.query(SELECT_ALL_TARIFFS_QUERY);
-    let resultUserContract = await this.query(
-      SELECT_USER_CONTRACT,
-      req.decoded.clientId
-    );
+
+    let resultUserContract = req.decoded.clientId
+      ? await this.query(SELECT_USER_CONTRACT, req.decoded.clientId)
+      : null;
+
+    let tariffId = resultUserContract
+      ? resultUserContract[0].Contract_TariffId
+      : null;
     await res.json({
       data: {
         resultCode: 0,
-        tariffId: resultUserContract[0].Contract_TariffId,
+        tariffId,
         tariffs
       }
     });
@@ -321,6 +419,22 @@ class HandlerGenerator {
     });
   };
 
+  getAccountInfo = async (req, res) => {
+    let { clientId, login, token, userRole } = req.decoded;
+
+    if (clientId) {
+      let contract = await this.query(SELECT_USER_CONTRACT, [clientId]);
+      let tariff = (await this.query(GET_TARIFF_BY_ID, [contract[0].Contract_TariffId]))[0];
+      await res.json({
+        data: {
+          resultCode: 0,
+          conclusionDate: contract[0].Contract_ConclusionDate,
+          tariff
+        }
+      });
+    }
+  };
+
   query = (sql, args) => {
     return new Promise((resolve, reject) => {
       this.connection.query(sql, args, (err, rows) => {
@@ -340,6 +454,9 @@ function main() {
   app.use(cors());
   // Routes and handlers
   app.post("/login", handlers.login);
+  app.post("/signup", handlers.signUp);
+  app.post("/createnewclient", checkToken, handlers.createNewClient);
+
   app.get("/services", checkToken, handlers.getServices);
   app.get("/auth/me", checkToken, handlers.authMe);
   /*  app.get("/tariffs", checkToken, handlers.getTariffs);
@@ -409,6 +526,10 @@ function main() {
     checkMounterRole,
     handlers.getNoOrdersMonthMounterInfo
   );
+
+  // account Info
+
+  app.get("/account", checkToken, handlers.getAccountInfo);
 
   app.listen(port, () => {
     console.log("Example app on port 1337!");

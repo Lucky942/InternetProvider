@@ -12,7 +12,6 @@ import ServiceInfo from "./ServiceInfo/ServiceInfo";
 import {adminRouteProtecter} from "../../../../../hoc/routeProtecter";
 
 const Services = ({ services, getServices }) => {
-  debugger;
   useEffect(() => {
     getServices();
   }, []);

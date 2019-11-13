@@ -1,0 +1,36 @@
+.form {
+    width: 300px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px #ccc;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+    margin: 0 auto;
+}
+
+.formTitle {
+    text-align: center;
+    font-weight: normal;
+}
+
+.formGroup {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.formButton {
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #0071f0;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+
+}
+
+.formButton:focus,
+.formButton:hover {
+    background-color: rgba(0, 113, 240, 0.7);
+}

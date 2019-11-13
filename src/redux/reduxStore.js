@@ -7,11 +7,14 @@ import thunk from "redux-thunk";
 import appReducer from "./appReducer";
 import staffReducer from "./staffReducer";
 import infoReducer from "./infoReducer";
+import userAccountReducer from "./userAccountReducer";
+
 
 let reducers = combineReducers({
   tariffsReducer,
   servicesReducer,
   infoReducer,
+  userAccountReducer,
   app: appReducer,
   auth: authReducer,
   staff: staffReducer,

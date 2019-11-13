@@ -1,6 +1,27 @@
+.speedUnit {
+    font-weight: bolder;
+}
 
-.tariff {
+.price {
+    margin-left: 5px;
+    display: inline-block;
+}
 
+.tariffPrice {
+    font-size: 30px;
+    display: inline-block;
+}
+
+.paragraph {
+    margin-bottom: 15px;
+}
+
+.priceUnits {
+    display: inline-block;
+}
+
+.priceUnit2 {
+    border-top: 1px solid black;
 }
 
 .btn {
@@ -50,7 +71,6 @@
     0 0 0 1.5px rgba(255, 105, 180, 0.5);
 }
 
-/*
 .btn.clicked::after{
     content: "Вы можете подключить не более одного тарифа";
     position: absolute;
@@ -58,4 +78,4 @@
     top: 40px;
     width: 200px;
     color: red;
-}*/
+}

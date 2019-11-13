@@ -26,12 +26,35 @@ export const authMe = () => {
   return axios.get("http://localhost:1337/auth/me");
 };
 
-export const loginAPI = (login, password, rememberMe) => {
+export const loginAPI = (login, password) => {
   return axios.post("http://localhost:1337/login", {
+    login,
+    password
+  });
+};
+
+export const signUpAPI = (login, password, rememberMe) => {
+  return axios.post("http://localhost:1337/signup", {
     login,
     password,
     rememberMe
   });
+};
+
+export const createNewClientAPI = async (
+  firstName,
+  lastName,
+  passport,
+  birthday
+) => {
+  let response = await axios.post("http://localhost:1337/createnewclient", {
+    firstName,
+    lastName,
+    passport,
+    birthday
+  });
+
+  return response.data;
 };
 
 export const logoutAPI = () => {
@@ -144,6 +167,15 @@ export const getExpensiveOrderMounterInfo = async year => {
 export const getNoOrdersMonthMounterInfo = async (year, month) => {
   let response = await axios.get(
     `http://localhost:1337/nomonthordersmounterinfo?year=${year}&month=${month}`
+  );
+  return response.data.data;
+};
+
+// userAccount request
+
+export const getAccountInfoAPI = async () => {
+  let response = await axios.get(
+    `http://localhost:1337/account`
   );
   return response.data.data;
 };
