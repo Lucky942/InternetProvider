@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React  from "react";
 import styles from "./Tariff.module.css";
 import * as classnames from "classnames";
 import withModalWindow from "../../../../../hoc/withModalWindow";

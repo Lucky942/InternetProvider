@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {  useEffect } from "react";
 import { requestTariffsStat } from "../../../../../../redux/tariffsReducer";
 import { connect } from "react-redux";
 import {getTariffsStat} from "../../../../../../redux/Selectors/tariffsSelectors";
@@ -10,8 +10,7 @@ import TariffsMenu from "../../GoodsMenu";
 const TariffsStat = ({ tariffs, getTariffsStat }) => {
   useEffect(() => {
     getTariffsStat();
-    console.log(tariffs);
-  }, []);
+  }, [getTariffsStat]);
 
   return (
     <div className={styles.container}>
@@ -19,21 +18,24 @@ const TariffsStat = ({ tariffs, getTariffsStat }) => {
 
       <div className={styles.tariffs}>
         <table>
-          <tr>
-            <th>Название тарифа</th>
-            <th>Количество пользователей</th>
-            <th>Максимальная скорость</th>
-            <th>Цена</th>
-          </tr>
-          {tariffs.map(elem => (
-              <tr>
-                <td>{elem.Tariff_Name}</td>
-                <td>{elem.Amount}</td>
-                <td>{elem.Tariff_MaxSpeed}</td>
-                <td>{elem.Tariff_Price}</td>
-              </tr>
-          ))}
+          <tbody>
+            <tr>
+              <th>Название тарифа</th>
+              <th>Количество пользователей</th>
+              <th>Максимальная скорость</th>
+              <th>Цена</th>
+            </tr>
+            {tariffs.map((elem, index) => (
+                <tr key={index}>
+                  <td>{elem.Tariff_Name}</td>
+                  <td>{elem.Amount}</td>
+                  <td>{elem.Tariff_MaxSpeed}</td>
+                  <td>{elem.Tariff_Price}</td>
+                </tr>
+            ))}
+          </tbody>
         </table>
+        
       </div>
 
     </div>

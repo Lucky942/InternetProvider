@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./SignUp.module.css";
 import { connect } from "react-redux";
 import { signUp } from "../../../redux/authReducer";
-import Redirect from "react-router-dom/es/Redirect";
+import { Redirect } from "react-router-dom";
 import SignUpForm from "../../Common/Forms/SignUpForm/SignUpForm";
 
 const SignUp = props => {

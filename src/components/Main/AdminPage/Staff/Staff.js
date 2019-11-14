@@ -1,37 +1,39 @@
-import React, {useState, useEffect} from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import styles from "./Staff.module.css"
-import {getStaff} from "../../../../redux/staffReducer";
+import styles from "./Staff.module.css";
+import { getStaff } from "../../../../redux/staffReducer";
 import withAuthRedirect from "../../../../hoc/withAuthRedirect";
-import {compose} from "redux";
-import {adminRouteProtecter} from "../../../../hoc/routeProtecter";
+import { compose } from "redux";
+import { adminRouteProtecter } from "../../../../hoc/routeProtecter";
 
-const  Staff = ({staff, getStaff}) => {
-
+const Staff = ({ staff, getStaff }) => {
   useEffect(() => {
     getStaff();
-    console.log(staff)
-  },[]);
+  }, [getStaff]);
 
   return (
-      <table className={styles.staff}>
+    <table className={styles.staff}>
+      <tbody>
         <tr>
           <th>ID</th>
           <th>Имя</th>
           <th>Фамилия</th>
-          <th>Пасспортные данные</th>
+          <th>Паспортные данные</th>
           <th>Дата рождения</th>
           <th>Дата приема на работу</th>
         </tr>
-        {staff.map(elem => <tr>
-          <td>{elem.Mounter_Id}</td>
-          <td>{elem.Mounter_FirstName}</td>
-          <td>{elem.Mounter_LastName}</td>
-          <td>{elem.Mounter_Passport}</td>
-          <td>{elem.Mounter_Birthday}</td>
-          <td>{elem.Mounter_EmploymentDate}</td>
-        </tr>)}
-      </table>
+        {staff.map((elem, index) => (
+          <tr key={index}>
+            <td>{elem.Mounter_Id}</td>
+            <td>{elem.Mounter_FirstName}</td>
+            <td>{elem.Mounter_LastName}</td>
+            <td>{elem.Mounter_Passport}</td>
+            <td>{elem.Mounter_Birthday}</td>
+            <td>{elem.Mounter_EmploymentDate}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };
 
@@ -42,11 +44,12 @@ let mapStateToProps = state => {
 };
 
 export default compose(
-    connect(
-        mapStateToProps,
-        { getStaff }),
-    adminRouteProtecter,
-    withAuthRedirect
+  connect(
+    mapStateToProps,
+    { getStaff }
+  ),
+  adminRouteProtecter,
+  withAuthRedirect
 )(Staff);
 /*export default connect(
   mapStateToProps,
